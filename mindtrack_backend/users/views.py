@@ -1,13 +1,12 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.contrib.auth.models import User
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def register(request):
     username = request.data.get('username')
     email = request.data.get('email')
@@ -21,14 +20,25 @@ def register(request):
         email=email,
         password=password
     )
-    return Response({'message': 'User registered successfully'}, status=201)
+    refresh = RefreshToken.for_user(user)
+    return Response({
+        'message': 'User registered successfully',
+        'access': str(refresh.access_token),
+        'refresh': str(refresh),
+    }, status=201)
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def login_view(request):
     username = request.data.get('username')
     password = request.data.get('password')
-
     user = authenticate(username=username, password=password)
     if user:
-        return Response({'message': 'Login successful', 'user_id': user.id}, status=200)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'message': 'Login successful',
+            'user_id': user.id,
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+        }, status=200)
     return Response({'error': 'Invalid credentials'}, status=401)
