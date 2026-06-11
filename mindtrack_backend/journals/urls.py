@@ -9,4 +9,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('mood/history/', views.mood_history, name='mood-history'),
     path('mood/summary/', views.mood_summary, name='mood-summary'),
+    path('mood/weekly/', views.weekly_summary, name='weekly-summary'),
 ]

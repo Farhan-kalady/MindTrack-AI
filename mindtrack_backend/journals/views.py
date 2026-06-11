@@ -7,6 +7,8 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from .models import JournalEntry, EmotionAnalysis
 from .serializers import JournalEntrySerializer
 from .ai_service import analyze_emotion
+from django.utils import timezone
+from datetime import timedelta
 
 
 
@@ -82,4 +84,55 @@ def mood_summary(request):
         'average_mood_score': round(avg_score, 1),
         'highest_mood': max(scores) if scores else 0,
         'lowest_mood': min(scores) if scores else 0,
-    })            
+    })   
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def weekly_summary(request):
+    # Get entries from last 7 days
+    week_ago = timezone.now() - timedelta(days=7)
+    entries = JournalEntry.objects.filter(
+        user=request.user,
+        created_at__gte=week_ago
+    )
+
+    if not entries.exists():
+        return Response({
+            'message': 'No entries in the last 7 days',
+            'total_entries': 0
+        })
+
+    scores = [e.mood_score for e in entries if e.mood_score]
+    avg_score = round(sum(scores) / len(scores), 1) if scores else 0
+
+    # Get emotion breakdown if available
+    from .models import EmotionAnalysis
+    emotions = EmotionAnalysis.objects.filter(
+        entry__user=request.user,
+        entry__created_at__gte=week_ago
+    ).values_list('emotion', flat=True)
+
+    emotion_count = {}
+    for emotion in emotions:
+        emotion_count[emotion] = emotion_count.get(emotion, 0) + 1
+
+    return Response({
+        'period': 'Last 7 days',
+        'total_entries': entries.count(),
+        'average_mood_score': avg_score,
+        'highest_mood': max(scores) if scores else 0,
+        'lowest_mood': min(scores) if scores else 0,
+        'emotion_breakdown': emotion_count,
+        'wellness_tip': get_wellness_tip(avg_score)
+    })
+
+def get_wellness_tip(avg_score):
+    if avg_score >= 8:
+        return "Excellent week! You are thriving. Keep up your positive habits."
+    elif avg_score >= 6:
+        return "Good week overall! Try to identify what made your best days great."
+    elif avg_score >= 4:
+        return "Mixed week. Consider adding a short daily walk or meditation."
+    else:
+        return "Tough week. Please reach out to someone you trust for support."             
