@@ -1,5 +1,9 @@
 # 🧠 MindTrack AI
 
+![Django CI](https://github.com/Farhan-kalady/MindTrack-AI/actions/workflows/django.yml/badge.svg)
+
+AI-powered mental health journal...
+
 ### AI-Powered Mental Health Journal & Emotion Tracker
 
 MindTrack AI is a socially impactful wellness platform that helps users record their daily thoughts and emotions through journaling. Using Artificial Intelligence, the system analyzes journal entries to identify emotions, track mood patterns, and provide personalized wellness insights.
