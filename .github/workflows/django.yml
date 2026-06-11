@@ -24,11 +24,10 @@ jobs:
         pip install -r mindtrack_backend/requirements.txt
 
     - name: Run tests
-  env:
-    SECRET_KEY: test-secret-key-for-ci-only
-    DEBUG: True
-    DATABASE_URL: sqlite:///test_db.sqlite3
-  run: |
-    cd mindtrack_backend
-    python manage.py migrate
-    python manage.py test journals --verbosity=2
+      env:
+        SECRET_KEY: test-secret-key-for-ci
+        DEBUG: True
+        DATABASE_URL: sqlite:///test_db.sqlite3
+      run: |
+        cd mindtrack_backend
+        python manage.py test journals --verbosity=2
