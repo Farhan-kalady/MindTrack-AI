@@ -8,6 +8,8 @@ from django.utils import timezone
 from datetime import timedelta
 from .models import JournalEntry
 from .serializers import JournalEntrySerializer
+from .ai_service import analyze_emotion
+from .models import EmotionAnalysis
 
 class JournalEntryViewSet(viewsets.ModelViewSet):
     serializer_class = JournalEntrySerializer
@@ -81,3 +83,30 @@ def get_wellness_tip(avg_score):
         return "Mixed week. Consider adding a short daily walk."
     else:
         return "Tough week. Please reach out to someone you trust."
+    
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def analyze_entry(request, pk):
+    try:
+        entry = JournalEntry.objects.get(pk=pk, user=request.user)
+    except JournalEntry.DoesNotExist:
+        return Response({'error': 'Journal entry not found'}, status=404)
+
+    try:
+        result = analyze_emotion(entry.entry_text)
+        EmotionAnalysis.objects.update_or_create(
+            entry=entry,
+            defaults={
+                'emotion': result['emotion'],
+                'sentiment': result['sentiment'],
+                'mood_score': result['mood_score'],
+                'ai_feedback': result['feedback'],
+            }
+        )
+        return Response({
+            'message': 'Analysis complete',
+            'data': result
+        }, status=200)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)    
