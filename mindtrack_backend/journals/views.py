@@ -89,12 +89,19 @@ def get_wellness_tip(avg_score):
 @permission_classes([IsAuthenticated])
 def analyze_entry(request, pk):
     try:
-        entry = JournalEntry.objects.get(pk=pk, user=request.user)
+        entry = JournalEntry.objects.get(
+            pk=pk,
+            user=request.user
+        )
     except JournalEntry.DoesNotExist:
-        return Response({'error': 'Journal entry not found'}, status=404)
+        return Response(
+            {'error': 'Journal entry not found'},
+            status=404
+        )
 
     try:
         result = analyze_emotion(entry.entry_text)
+
         EmotionAnalysis.objects.update_or_create(
             entry=entry,
             defaults={
@@ -104,9 +111,23 @@ def analyze_entry(request, pk):
                 'ai_feedback': result['feedback'],
             }
         )
+
+        # Update entry mood score with AI score
+        entry.mood_score = result['mood_score']
+        entry.save()
+
         return Response({
             'message': 'Analysis complete',
-            'data': result
+            'entry_id': pk,
+            'emotion': result['emotion'],
+            'sentiment': result['sentiment'],
+            'mood_score': result['mood_score'],
+            'feedback': result['feedback'],
+            'keywords': result.get('keywords', [])
         }, status=200)
+
     except Exception as e:
-        return Response({'error': str(e)}, status=500)    
+        return Response(
+            {'error': str(e)},
+            status=500
+        )
