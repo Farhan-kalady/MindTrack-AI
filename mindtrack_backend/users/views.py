@@ -4,6 +4,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from drf_spectacular.utils import extend_schema
+from rest_framework.response import Response
+
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -42,3 +46,4 @@ def login_view(request):
             'refresh': str(refresh),
         }, status=200)
     return Response({'error': 'Invalid credentials'}, status=401)
+

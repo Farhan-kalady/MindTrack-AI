@@ -4,6 +4,33 @@
 
 AI-powered mental health journal...
 
+# Project Name
+![Python](https://img.shields.io/badge/python-3.11-blue)
+
+## Description
+Brief description of what this API does.
+
+## Installation
+\```bash
+git clone ...
+pip install -r requirements.txt
+\```
+
+## API Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET    | /api/products/ | List all products |
+| POST   | /api/products/ | Create a product |
+
+## Environment Variables
+| Variable | Description |
+|----------|-------------|
+| SECRET_KEY | Django secret key |
+| DATABASE_URL | Postgres connection string |
+
+## Docs
+Swagger UI available at `/api/schema/swagger-ui/`
+
 ### AI-Powered Mental Health Journal & Emotion Tracker
 
 MindTrack AI is a socially impactful wellness platform that helps users record their daily thoughts and emotions through journaling. Using Artificial Intelligence, the system analyzes journal entries to identify emotions, track mood patterns, and provide personalized wellness insights.
