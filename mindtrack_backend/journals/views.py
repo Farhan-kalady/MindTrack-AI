@@ -12,7 +12,18 @@ from .ai_service import analyze_emotion
 from .models import EmotionAnalysis
 from drf_spectacular.utils import extend_schema
 
+
+@extend_schema(tags=['Journals'])
 class JournalEntryViewSet(viewsets.ModelViewSet):
+    """
+    Journal Entry CRUD Operations.
+
+    list: Get all journal entries for authenticated user.
+    create: Create a new journal entry.
+    retrieve: Get a specific journal entry by ID.
+    update: Update a journal entry.
+    destroy: Delete a journal entry.
+    """
     serializer_class = JournalEntrySerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -29,6 +40,8 @@ class JournalEntryViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
+@extend_schema(tags=['Mood Analytics'], summary='Get mood history')
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def mood_history(request):
@@ -40,6 +53,8 @@ def mood_history(request):
         'mood_history': list(entries)
     })
 
+
+@extend_schema(tags=['Mood Analytics'], summary='Get mood summary statistics')
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def mood_summary(request):
@@ -55,6 +70,8 @@ def mood_summary(request):
         'lowest_mood': min(scores) if scores else 0,
     })
 
+
+@extend_schema(tags=['Mood Analytics'], summary='Get weekly mood summary')
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def weekly_summary(request):
@@ -75,6 +92,7 @@ def weekly_summary(request):
         'lowest_mood': min(scores) if scores else 0,
     })
 
+
 def get_wellness_tip(avg_score):
     if avg_score >= 8:
         return "Excellent week! Keep up your positive habits."
@@ -84,8 +102,13 @@ def get_wellness_tip(avg_score):
         return "Mixed week. Consider adding a short daily walk."
     else:
         return "Tough week. Please reach out to someone you trust."
-    
 
+
+@extend_schema(
+    tags=['AI Analysis'],
+    summary='Analyze journal entry emotions',
+    description='Uses Google Gemini AI to detect emotions and provide wellness suggestions.'
+)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def analyze_entry(request, pk):
@@ -132,46 +155,3 @@ def analyze_entry(request, pk):
             {'error': str(e)},
             status=500
         )
-        
-
-
-@extend_schema(tags=['Journals'])
-class JournalEntryViewSet(viewsets.ModelViewSet):
-    """
-    Journal Entry CRUD Operations.
-
-    list: Get all journal entries for authenticated user.
-    create: Create a new journal entry.
-    retrieve: Get a specific journal entry by ID.
-    update: Update a journal entry.
-    destroy: Delete a journal entry.
-    """
-    ...
-
-@extend_schema(
-    tags=['AI Analysis'],
-    summary='Analyze journal entry emotions',
-    description='Uses Google Gemini AI to detect emotions and provide wellness suggestions.'
-)
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def analyze_entry(request, pk):
-    ...
-
-@extend_schema(tags=['Mood Analytics'], summary='Get mood history')
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def mood_history(request):
-    ...
-
-@extend_schema(tags=['Mood Analytics'], summary='Get mood summary statistics')
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def mood_summary(request):
-    ...
-
-@extend_schema(tags=['Mood Analytics'], summary='Get weekly mood summary')
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def weekly_summary(request):
-    ...        
