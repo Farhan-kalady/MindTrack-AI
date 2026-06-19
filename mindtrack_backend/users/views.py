@@ -47,3 +47,23 @@ def login_view(request):
         }, status=200)
     return Response({'error': 'Invalid credentials'}, status=401)
 
+@extend_schema(
+    tags=['Authentication'],
+    summary='Register a new user',
+    description='Creates a new user account and returns JWT tokens.'
+)
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register(request):
+    ...
+
+@extend_schema(
+    tags=['Authentication'],
+    summary='Login user',
+    description='Authenticates user and returns JWT access and refresh tokens.'
+)
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_view(request):
+    ...
+
