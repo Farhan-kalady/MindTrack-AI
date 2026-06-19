@@ -39,12 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'journals',
-    'django_filters',
-    'users',
     'rest_framework',
-    'drf_spectacular',
-    
+    'django_filters',
+    'drf_spectacular',   
+    'journals',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -102,8 +101,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  # ← ADD
 }
 
 
@@ -163,3 +161,35 @@ if 'test' in sys.argv:
             'NAME': ':memory:',
         }
     }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'MindTrack AI API',
+    'DESCRIPTION': '''
+## MindTrack AI — Mental Health Journal & Emotion Tracker
+
+An AI-powered mental wellness platform that allows users to maintain
+a personal journal and track their emotional well-being using Google Gemini AI.
+
+### Features:
+- 🔐 JWT Authentication (Register & Login)
+- 📝 Journal Entry CRUD Operations
+- 🤖 AI Emotion Analysis (Google Gemini)
+- 📊 Mood History & Analytics
+- 📅 Weekly Wellness Summary
+    ''',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'CONTACT': {
+        'name': 'Mohammed Farhan K',
+        'email': 'farhancherushola@gmail.com',
+    },
+    'LICENSE': {
+        'name': 'MIT License',
+    },
+    'TAGS': [
+        {'name': 'Authentication', 'description': 'Register and login endpoints'},
+        {'name': 'Journals', 'description': 'Journal entry CRUD operations'},
+        {'name': 'AI Analysis', 'description': 'AI emotion analysis endpoints'},
+        {'name': 'Mood Analytics', 'description': 'Mood history and summary'},
+    ],
+}

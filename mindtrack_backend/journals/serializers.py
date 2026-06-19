@@ -1,25 +1,14 @@
-from rest_framework import serializers
-from .models import JournalEntry, EmotionAnalysis
+class JournalEntrySerializer(serializers.ModelSerializer):
+    """
+    Serializer for JournalEntry model.
+    Handles conversion between JournalEntry instances and JSON.
+    Includes nested EmotionAnalysis data when available.
+    """
+    ...
 
 class EmotionAnalysisSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EmotionAnalysis
-        fields = '__all__'
-
-class JournalEntrySerializer(serializers.ModelSerializer):
-    emotion_analysis = EmotionAnalysisSerializer(
-        source='emotionanalysis',
-        read_only=True
-    )
-
-    class Meta:
-        model = JournalEntry
-        fields = [
-            'id',
-            'entry_text',
-            'mood_score',
-            'created_at',
-            'updated_at',
-            'emotion_analysis'
-        ]
-        read_only_fields = ['created_at', 'updated_at']
+    """
+    Serializer for EmotionAnalysis model.
+    Returns AI analysis results in JSON format.
+    """
+    ...

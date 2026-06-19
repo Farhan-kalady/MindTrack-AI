@@ -10,6 +10,7 @@ from .models import JournalEntry
 from .serializers import JournalEntrySerializer
 from .ai_service import analyze_emotion
 from .models import EmotionAnalysis
+from drf_spectacular.utils import extend_schema
 
 class JournalEntryViewSet(viewsets.ModelViewSet):
     serializer_class = JournalEntrySerializer
@@ -131,3 +132,46 @@ def analyze_entry(request, pk):
             {'error': str(e)},
             status=500
         )
+        
+
+
+@extend_schema(tags=['Journals'])
+class JournalEntryViewSet(viewsets.ModelViewSet):
+    """
+    Journal Entry CRUD Operations.
+
+    list: Get all journal entries for authenticated user.
+    create: Create a new journal entry.
+    retrieve: Get a specific journal entry by ID.
+    update: Update a journal entry.
+    destroy: Delete a journal entry.
+    """
+    ...
+
+@extend_schema(
+    tags=['AI Analysis'],
+    summary='Analyze journal entry emotions',
+    description='Uses Google Gemini AI to detect emotions and provide wellness suggestions.'
+)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def analyze_entry(request, pk):
+    ...
+
+@extend_schema(tags=['Mood Analytics'], summary='Get mood history')
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def mood_history(request):
+    ...
+
+@extend_schema(tags=['Mood Analytics'], summary='Get mood summary statistics')
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def mood_summary(request):
+    ...
+
+@extend_schema(tags=['Mood Analytics'], summary='Get weekly mood summary')
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def weekly_summary(request):
+    ...        
