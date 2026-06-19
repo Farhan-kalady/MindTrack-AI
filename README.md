@@ -1,201 +1,144 @@
 # 🧠 MindTrack AI
 
-![Django CI](https://github.com/Farhan-kalady/MindTrack-AI/actions/workflows/django.yml/badge.svg)
+![Django CI](https://github.com/Farhan-kalady/MindTrack-AI/actions/workflows/django.yml/badge.svg?branch=master)
+![Python](https://img.shields.io/badge/Python-3.13-blue)
+![Django](https://img.shields.io/badge/Django-6.0.2-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-AI-powered mental health journal...
+> AI-powered Mental Health Journal & Emotion Tracker
 
-# Project Name
-![Python](https://img.shields.io/badge/python-3.11-blue)
+MindTrack AI is a mental wellness platform where users journal their
+daily thoughts and receive AI-powered emotion analysis, mood tracking,
+and personalized wellness suggestions using Google Gemini AI.
 
-## Description
-Brief description of what this API does.
+---
 
-## Installation
-\```bash
-git clone ...
-pip install -r requirements.txt
-\```
+## 🚀 Features
 
-## API Endpoints
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET    | /api/products/ | List all products |
-| POST   | /api/products/ | Create a product |
+- 🔐 JWT Authentication (Register & Login)
+- 📝 Full Journal CRUD (Create, Read, Update, Delete)
+- 🤖 AI Emotion Detection via Google Gemini
+- 📊 Mood History & Trend Analytics
+- 📅 Weekly Wellness Summary Reports
+- 🔍 Search & Filter Journal Entries
+- 📖 Live Swagger API Documentation
 
-## Environment Variables
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Backend | Django REST Framework |
+| Database | Supabase PostgreSQL |
+| Authentication | JWT (djangorestframework-simplejwt) |
+| AI Integration | Google Gemini API (gemini-2.0-flash) |
+| API Docs | drf-spectacular (Swagger UI) |
+| Deployment | Railway |
+| CI/CD | GitHub Actions |
+
+---
+
+## 📖 API Documentation
+
+Live Swagger UI: `http://127.0.0.1:8000/api/schema/swagger-ui/`
+
+🌐 **Live URL:** `coming soon (Railway deployment)`
+
+### Endpoints
+
+| Method | Endpoint | Description | Auth |
+|---|---|---|---|
+| POST | `/api/auth/register/` | Register new user | ❌ |
+| POST | `/api/auth/login/` | Login & get JWT token | ❌ |
+| GET | `/api/journals/` | List all entries | ✅ |
+| POST | `/api/journals/` | Create journal entry | ✅ |
+| GET | `/api/journals/{id}/` | Get single entry | ✅ |
+| PUT | `/api/journals/{id}/` | Update entry | ✅ |
+| DELETE | `/api/journals/{id}/` | Delete entry | ✅ |
+| POST | `/api/journals/{id}/analyze/` | AI emotion analysis | ✅ |
+| GET | `/api/mood/history/` | Mood history | ✅ |
+| GET | `/api/mood/summary/` | Mood statistics | ✅ |
+| GET | `/api/mood/weekly/` | Weekly report | ✅ |
+
+---
+
+## ⚙️ Environment Variables
+
+Create a `.env` file in `mindtrack_backend/`:
+
 | Variable | Description |
-|----------|-------------|
-| SECRET_KEY | Django secret key |
-| DATABASE_URL | Postgres connection string |
-
-## Docs
-Swagger UI available at `/api/schema/swagger-ui/`
-
-### AI-Powered Mental Health Journal & Emotion Tracker
-
-MindTrack AI is a socially impactful wellness platform that helps users record their daily thoughts and emotions through journaling. Using Artificial Intelligence, the system analyzes journal entries to identify emotions, track mood patterns, and provide personalized wellness insights.
+|---|---|
+| `SECRET_KEY` | Django secret key |
+| `DEBUG` | True for development |
+| `DATABASE_URL` | Supabase PostgreSQL URL |
+| `GEMINI_API_KEY` | Google Gemini API key |
 
 ---
 
-## 📌 Problem Statement
+## 🏃 Run Locally
 
-Mental health challenges such as stress, anxiety, and emotional burnout are increasingly common among students and professionals. Many individuals struggle to understand their emotional patterns and maintain consistent self-reflection habits.
+```bash
+# Clone the repo
+git clone https://github.com/Farhan-kalady/MindTrack-AI.git
+cd MindTrack-AI/mindtrack_backend
 
-MindTrack AI provides a secure digital journaling platform that leverages AI to help users track emotions, understand mood trends, and receive supportive wellness suggestions.
+# Install dependencies
+pip install -r requirements.txt
 
----
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your values
 
-## 🎯 Objectives
+# Run migrations
+python manage.py migrate
 
-* Enable users to maintain daily journal entries.
-* Detect emotions using AI.
-* Track mood history and emotional trends.
-* Generate personalized wellness recommendations.
-* Promote emotional awareness and self-reflection.
-
----
-
-## ✨ Key Features
-
-### User Management
-
-* User Registration
-* User Login
-* Secure Authentication with Supabase
-
-### Journal Management
-
-* Create Journal Entries
-* View Journal History
-* Update Journal Entries
-* Delete Journal Entries
-
-### AI Features
-
-* Emotion Detection
-* Sentiment Analysis
-* Mood Scoring (0–10)
-* Personalized Wellness Suggestions
-* Weekly Mood Summary Generation
-
-### Analytics
-
-* Mood Tracking Dashboard
-* Emotion Trends Visualization
-* Weekly Wellness Reports
-
----
-
-## 🤖 AI Integration
-
-The platform uses OpenAI APIs to:
-
-* Analyze journal entries
-* Detect emotions (Happy, Sad, Anxious, Angry, Neutral, etc.)
-* Perform sentiment analysis
-* Generate supportive and personalized wellness suggestions
-* Create weekly emotional summaries
-
-### Example
-
-**Journal Entry**
-
-> "I have been feeling stressed about my exams and future career."
-
-**AI Output**
-
-```json
-{
-  "emotion": "Anxiety",
-  "sentiment": "Negative",
-  "mood_score": 4,
-  "suggestion": "Break your goals into smaller tasks and take regular breaks to reduce stress."
-}
+# Start server
+python manage.py runserver
 ```
 
 ---
 
-## 🏗️ Tech Stack
+## 📸 Screenshots
 
-| Component         | Technology                |
-| ----------------- | ------------------------- |
-| Backend           | Django REST Framework     |
-| Database          | Supabase PostgreSQL       |
-| Authentication    | Supabase Auth             |
-| AI Integration    | OpenAI API                |
-| API Documentation | Swagger / drf-spectacular |
-| Deployment        | Railway                   |
-| Version Control   | Git & GitHub              |
+### Swagger UI
+![Swagger UI](docs/swagger-screenshot.png)
 
 ---
 
-## 📂 Project Structure
+## 📐 Architecture
 
-```text
-mindtrack-ai/
-│
-├── backend/
-├── users/
-├── journal/
-├── docs/
-├── tests/
-│
-├── requirements.txt
-├── manage.py
-├── README.md
-└── .env
+See [docs/architecture.md](mindtrack_backend/docs/architecture.md)
+
+---
+
+## 🤝 Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+---
+
+## 📬 Postman Collection
+
+[View API Collection](https://documenter.getpostman.com/view/50265930/2sBXwvJ8EF)
+
+---
+
+## 🧪 Run Tests
+
+```bash
+python manage.py test journals
 ```
 
 ---
 
-## 🔌 API Endpoints
-
-| Method | Endpoint            | Description          |
-| ------ | ------------------- | -------------------- |
-| POST   | /api/auth/register/ | Register User        |
-| POST   | /api/auth/login/    | Login User           |
-| GET    | /api/journals/      | Get Journal Entries  |
-| POST   | /api/journals/      | Create Journal Entry |
-| GET    | /api/journals/{id}/ | Retrieve Entry       |
-| PUT    | /api/journals/{id}/ | Update Entry         |
-| DELETE | /api/journals/{id}/ | Delete Entry         |
-| POST   | /api/analyze/{id}/  | Analyze Emotion      |
-| GET    | /api/mood/history/  | Mood History         |
-| GET    | /api/mood/summary/  | Weekly Summary       |
-
----
-
-## 🚀 Deployment
-
-The application will be deployed using Railway and connected to Supabase PostgreSQL.
-
----
-
-## 🔮 Future Enhancements
-
-* Mobile Application
-* Voice Journal Entries
-* AI Mood Prediction
-* Mental Wellness Resource Recommendations
-* Community Support Features
-
----
-
-## 🌍 Social Impact
-
-MindTrack AI aims to improve emotional awareness and mental well-being by providing users with an intelligent journaling experience. The platform encourages healthy self-reflection and helps users understand their emotions through AI-powered insights.
-
----
-
-## 👨‍💻 Author
+## 👤 Author
 
 **Mohammed Farhan K**
-
-* GitHub: https://github.com/Farhan-kalady
-* LinkedIn: [www.linkedin.com/in/farhan-kalady-70651523b](http://www.linkedin.com/in/farhan-kalady-70651523b)
+- GitHub: [@Farhan-kalady](https://github.com/Farhan-kalady)
 
 ---
 
 ## 📄 License
 
-This project is developed as part of an AI Internship Project and is intended for educational and learning purposes.
+MIT License
