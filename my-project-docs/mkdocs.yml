@@ -1,9 +1,0 @@
-site_name: My Project Docs
-theme:
-  name: material
-  palette:
-    primary: green
-nav:
-  - Home: index.md
-  - API Reference: api.md
-  - Setup Guide: setup.md
