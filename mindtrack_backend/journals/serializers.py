@@ -1,3 +1,6 @@
+from rest_framework import serializers
+from .models import JournalEntry, EmotionAnalysis   
+
 class JournalEntrySerializer(serializers.ModelSerializer):
     """
     Serializer for JournalEntry model.
