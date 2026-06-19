@@ -1,3 +1,5 @@
+from django.db import models
+
 class JournalEntry(models.Model):
     """
     Stores a single journal entry for a user.
