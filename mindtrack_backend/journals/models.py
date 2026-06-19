@@ -1,3 +1,8 @@
+from django.db import models
+from django.contrib.auth.models import User
+
+
+
 class JournalEntry(models.Model):
     """
     Stores a single journal entry for a user.
