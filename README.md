@@ -132,6 +132,11 @@ python manage.py test journals
 
 ---
 
+## ✅ Test Coverage
+![Coverage Report](docs/coverage-report.png)
+
+---
+
 ## 👤 Author
 
 **Mohammed Farhan K**

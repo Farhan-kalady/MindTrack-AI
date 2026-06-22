@@ -5,10 +5,13 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from drf_spectacular.utils import extend_schema
-from rest_framework.response import Response
 
 
-
+@extend_schema(
+    tags=['Authentication'],
+    summary='Register a new user',
+    description='Creates a new user account and returns JWT tokens.'
+)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
@@ -31,6 +34,12 @@ def register(request):
         'refresh': str(refresh),
     }, status=201)
 
+
+@extend_schema(
+    tags=['Authentication'],
+    summary='Login user',
+    description='Authenticates user and returns JWT access and refresh tokens.'
+)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_view(request):
@@ -46,24 +55,3 @@ def login_view(request):
             'refresh': str(refresh),
         }, status=200)
     return Response({'error': 'Invalid credentials'}, status=401)
-
-@extend_schema(
-    tags=['Authentication'],
-    summary='Register a new user',
-    description='Creates a new user account and returns JWT tokens.'
-)
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def register(request):
-    ...
-
-@extend_schema(
-    tags=['Authentication'],
-    summary='Login user',
-    description='Authenticates user and returns JWT access and refresh tokens.'
-)
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def login_view(request):
-    ...
-
