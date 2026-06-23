@@ -3,7 +3,7 @@ services:
     name: mindtrack-ai
     plan: free
     runtime: python
-    buildCommand: chmod +x build.sh && ./build.sh
+    buildCommand: pip install -r requirements.txt && python mindtrack_backend/manage.py collectstatic --noinput && python mindtrack_backend/manage.py migrate
     startCommand: gunicorn --chdir mindtrack_backend mindtrack_backend.wsgi:application
     envVars:
       - key: DEBUG
