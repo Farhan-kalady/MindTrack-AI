@@ -113,6 +113,9 @@ python manage.py runserver
 ### Swagger UI
 ![Swagger UI](docs/swagger-screenshot.png)
 
+### Uptime Monitoring (UptimeRobot)
+![UptimeRobot Monitor](docs/uptimerobot.png)
+
 ---
 
 ## 📐 Architecture
