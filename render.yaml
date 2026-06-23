@@ -1,6 +1,7 @@
 services:
   - type: web
     name: mindtrack-ai
+    plan: free
     runtime: python
     buildCommand: chmod +x build.sh && ./build.sh
     startCommand: gunicorn --chdir mindtrack_backend mindtrack_backend.wsgi:application
