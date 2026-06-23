@@ -25,6 +25,15 @@ and personalized wellness suggestions using Google Gemini AI.
 
 ---
 
+## 🛡️ Security & Performance Features
+
+- **🔒 Rate Limiting:** Enforces rate limiting on the AI analysis view using `django-ratelimit` (limits users to **5 requests/minute** to protect against abuse and token costs).
+- **🛡️ CORS Support:** Configured with `django-cors-headers` to allow secure frontend connections.
+- **✅ Input Validation:** Strong serializer validation verifies that journal entries are not empty, have at least **10 characters**, and do not exceed **5000 characters**.
+- **⚡ DB Performance:** Optimizes database lookups with `select_related('emotionanalysis')` to solve the N+1 query problem.
+
+---
+
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
@@ -33,17 +42,17 @@ and personalized wellness suggestions using Google Gemini AI.
 | Database | Supabase PostgreSQL |
 | Authentication | JWT (djangorestframework-simplejwt) |
 | AI Integration | Google Gemini API (gemini-2.0-flash) |
-| API Docs | drf-spectacular (Swagger UI) |
-| Deployment | Railway |
+| API Docs | drf-spectacular (Swagger UI / ReDoc) |
+| Deployment | Render |
 | CI/CD | GitHub Actions |
 
 ---
 
 ## 📖 API Documentation
 
-Live Swagger UI: `http://127.0.0.1:8000/api/schema/swagger-ui/`
-
-🌐 **Live URL:** `coming soon (Railway deployment)`
+- 🏠 **Live Home URL:** [https://mindtrack-ai-lw6i.onrender.com/](https://mindtrack-ai-lw6i.onrender.com/)
+- 📖 **Interactive Swagger UI:** [https://mindtrack-ai-lw6i.onrender.com/api/schema/swagger-ui/](https://mindtrack-ai-lw6i.onrender.com/api/schema/swagger-ui/)
+- 📋 **Structured ReDoc:** [https://mindtrack-ai-lw6i.onrender.com/api/schema/redoc/](https://mindtrack-ai-lw6i.onrender.com/api/schema/redoc/)
 
 ### Endpoints
 
