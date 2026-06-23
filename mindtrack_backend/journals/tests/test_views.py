@@ -126,3 +126,8 @@ class TestHomePage:
         assert response.status_code == 200
         assert b"MindTrack AI" in response.content
         assert b"Explore API Docs" in response.content
+
+    def test_health_check_returns_ok(self, api_client):
+        response = api_client.get('/healthz/')
+        assert response.status_code == 200
+        assert response.json() == {"status": "healthy"}
