@@ -97,3 +97,12 @@ class TestAnalyzeEntryView:
         entry.refresh_from_db()
         assert entry.mood_score == 7
         assert entry.emotionanalysis.emotion == 'calm'
+
+
+@pytest.mark.django_db
+class TestHomePage:
+    def test_home_page_renders_successfully(self, api_client):
+        response = api_client.get('/')
+        assert response.status_code == 200
+        assert b"MindTrack AI" in response.content
+        assert b"Explore API Docs" in response.content

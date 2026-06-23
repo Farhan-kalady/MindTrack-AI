@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from journals.views import home_page
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
@@ -7,6 +8,7 @@ from drf_spectacular.views import (
 )
 
 urlpatterns = [
+    path('', home_page, name='home'),
     path('admin/', admin.site.urls),
     path('api/auth/', include('users.urls')),
     path('api/', include('journals.urls')),

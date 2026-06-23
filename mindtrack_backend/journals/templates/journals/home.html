@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindTrack AI — AI-Powered Mental Health Journal & Emotion Tracker</title>
+    <meta name="description" content="MindTrack AI uses Google Gemini AI to analyze journal entries, detect emotions, track mood trends, and provide supportive wellness feedback.">
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-primary: #8b5cf6; /* Violet */
+            --accent-secondary: #ec4899; /* Pink */
+            --accent-gradient: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            --glow-color: rgba(139, 92, 246, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        /* Abstract Background Glows */
+        .bg-glow-1 {
+            position: absolute;
+            top: -10%;
+            left: 20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: -1;
+            filter: blur(80px);
+            pointer-events: none;
+        }
+
+        .bg-glow-2 {
+            position: absolute;
+            bottom: 10%;
+            right: 10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: -1;
+            filter: blur(80px);
+            pointer-events: none;
+        }
+
+        /* Container & Navigation */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            padding: 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo span {
+            -webkit-text-fill-color: initial;
+        }
+
+        .github-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 99px;
+            border: 1px solid var(--card-border);
+        }
+
+        .github-link:hover {
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 0 60px 0;
+            position: relative;
+        }
+
+        .badge {
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #c084fc;
+            padding: 6px 16px;
+            border-radius: 99px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #fb7185 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 650px;
+            margin: 0 auto 40px auto;
+            font-weight: 300;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(139, 92, 246, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Layout Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        @media (min-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1.2fr 0.8fr;
+            }
+        }
+
+        /* Glassmorphic Card */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 32px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+        }
+
+        /* Try it Out / Interactive Panel */
+        .card-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-description {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #c084fc;
+        }
+
+        .textarea-input {
+            width: 100%;
+            height: 140px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 15px;
+            resize: none;
+            transition: all 0.2s ease;
+        }
+
+        .textarea-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .preset-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .preset-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            padding: 6px 12px;
+            border-radius: 99px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-badge:hover {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.4);
+            color: #c084fc;
+        }
+
+        /* Result Panel (Hidden by default) */
+        .result-panel {
+            margin-top: 24px;
+            border-top: 1px solid var(--card-border);
+            padding-top: 24px;
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media(min-width: 600px) {
+            .result-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .mood-score-circle {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .score-number {
+            font-size: 48px;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .metric-card {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .pill-joy { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .pill-sad { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .pill-anger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .pill-calm { background: rgba(139, 92, 246, 0.15); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.3); }
+
+        .feedback-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .keywords-container {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .keyword-badge {
+            background: rgba(255, 255, 255, 0.05);
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            color: var(--text-primary);
+            border: 1px solid var(--card-border);
+        }
+
+        /* Sidebar / Docs links */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .doc-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-2px);
+            background: rgba(139, 92, 246, 0.05);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .doc-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+        }
+
+        .doc-card-title span {
+            color: var(--accent-primary);
+        }
+
+        .doc-card-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Features Section */
+        .features-section {
+            margin-bottom: 80px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(139, 92, 246, 0.2);
+            background: rgba(139, 92, 246, 0.02);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--card-border);
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .footer-logo {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .footer-tech {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tech-badge {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--card-border);
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            color: var(--text-secondary);
+        }
+
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <a href="/" class="logo">
+                <span>🧠</span> MindTrack AI
+            </a>
+            <a href="https://github.com/Farhan-kalady/MindTrack-AI" target="_blank" class="github-link">
+                <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor" style="display:inline-block;vertical-align:text-bottom;">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+                GitHub
+            </a>
+        </header>
+
+        <!-- Hero -->
+        <section class="hero">
+            <span class="badge">Next-Gen Mental Wellness</span>
+            <h1>Analyze Your Mind with <br><span class="gradient-text">MindTrack AI</span></h1>
+            <p>A secure, AI-powered journaling platform that tracks your moods, detects underlying emotional themes, and provides personalized wellness summaries.</p>
+            <div class="cta-group">
+                <a href="/api/schema/swagger-ui/" class="btn btn-primary">
+                    Explore API Docs 📖
+                </a>
+                <a href="/admin/" class="btn btn-secondary">
+                    Access Admin Panel ⚙️
+                </a>
+            </div>
+        </section>
+
+        <!-- Main Content Layout -->
+        <main class="main-grid">
+            <!-- Try it Out Simulator -->
+            <section class="card">
+                <div class="card-title">
+                    <span>✨</span> Live AI Simulator
+                </div>
+                <div class="card-description">
+                    Write how your day went below to simulate how the Gemini AI models analyze your emotional states and return wellness patterns.
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="journalText">Your Journal Entry</label>
+                    <textarea 
+                        id="journalText" 
+                        class="textarea-input" 
+                        placeholder="Type how you are feeling or choose a preset context below..."
+                    ></textarea>
+                </div>
+
+                <div class="preset-container">
+                    <span class="preset-badge" onclick="loadPreset('happy')">😊 Productive & Happy</span>
+                    <span class="preset-badge" onclick="loadPreset('sad')">😢 Lonely & Stressed</span>
+                    <span class="preset-badge" onclick="loadPreset('calm')">🧘 Peaceful Meditation</span>
+                    <span class="preset-badge" onclick="loadPreset('angry')">😠 Frustrated & Annoyed</span>
+                </div>
+
+                <button id="analyzeBtn" class="btn btn-primary" style="width:100%; justify-content:center;" onclick="runMockAnalysis()">
+                    <span class="spinner" id="btnSpinner"></span>
+                    <span id="btnText">Analyze Journal Entry 🤖</span>
+                </button>
+
+                <!-- Result Panel -->
+                <div class="result-panel" id="resultPanel">
+                    <div class="result-grid">
+                        <div class="mood-score-circle">
+                            <div class="metric-label">Mood Score</div>
+                            <div class="score-number" id="resultScore">8</div>
+                            <div class="feedback-text" id="scoreSubText">Excellent Mood</div>
+                        </div>
+
+                        <div class="metric-card">
+                            <div class="metric-label">Dominant Emotion</div>
+                            <div class="metric-value">
+                                <span id="emotionVal">Joy</span>
+                                <span id="emotionPill" class="pill pill-joy">JOYFUL</span>
+                            </div>
+                            <div class="metric-label" style="margin-top: 12px;">Sentiment</div>
+                            <div class="metric-value" style="font-size: 16px; margin-bottom: 0;" id="sentimentVal">
+                                Positive
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card" style="margin-top: 20px;">
+                        <div class="metric-label">AI Wellness Feedback</div>
+                        <p class="feedback-text" id="feedbackVal" style="margin-top: 6px;"></p>
+                        
+                        <div class="metric-label" style="margin-top: 14px;">Key Themes Detected</div>
+                        <div class="keywords-container" id="keywordsContainer"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sidebar Quick Links -->
+            <aside class="sidebar">
+                <div class="card" style="padding: 24px;">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color:#c084fc;">API Resources</h3>
+                    
+                    <div style="display:flex; flex-direction:column; gap:16px;">
+                        <a href="/api/schema/swagger-ui/" class="doc-card">
+                            <div class="doc-card-title"><span>⚡</span> Swagger UI</div>
+                            <div class="doc-card-desc">Interactive documentation to test all endpoints.</div>
+                        </a>
+
+                        <a href="/api/schema/redoc/" class="doc-card">
+                            <div class="doc-card-title"><span>📋</span> ReDoc</div>
+                            <div class="doc-card-desc">Clean, readable, and structured OpenAPI spec.</div>
+                        </a>
+
+                        <a href="/api/schema/" class="doc-card">
+                            <div class="doc-card-title"><span>📂</span> OpenAPI Spec JSON</div>
+                            <div class="doc-card-desc">Download raw OpenAPI specification file.</div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 24px;">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color:#c084fc;">Database Status</h3>
+                    <p style="font-size:14px; color:var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+                        The API is connected to <strong>Supabase PostgreSQL</strong> for secure journaling data storage.
+                    </p>
+                    <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight: 600; color:#34d399;">
+                        <span style="display:inline-block; width:8px; height:8px; background:#34d399; border-radius:50%;"></span>
+                        Supabase DB Connected
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Features Showcase -->
+        <section class="features-section">
+            <div class="section-header">
+                <h2>Platform Features</h2>
+                <p>Designed with security, intelligence, and beautiful design patterns in mind.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">Gemini 2.0 Flash</h3>
+                    <p class="feature-desc">Leverages modern Google Gemini model for smart emotional analysis and suggestions.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3 class="feature-title">JWT Protected</h3>
+                    <p class="feature-desc">All personal journals are secured behind JSON Web Token authentication wrappers.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Mood Analytics</h3>
+                    <p class="feature-desc">Retrieve averages, history logs, and weekly statistics of your emotional metrics.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-logo">MindTrack AI</div>
+            <p>&copy; 2026 Mohammed Farhan K. All rights reserved.</p>
+            <div class="footer-tech">
+                <span class="tech-badge">Django 6.0</span>
+                <span class="tech-badge">Django REST Framework</span>
+                <span class="tech-badge">Supabase</span>
+                <span class="tech-badge">Gemini AI</span>
+                <span class="tech-badge">drf-spectacular</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Simulator Interactive Logic -->
+    <script>
+        const PRESETS = {
+            happy: {
+                text: "I had a wonderful day today! I completed all my project milestones, got to read a chapter of my book, and went for a run in the evening. I feel accomplished and very happy.",
+                score: 9,
+                sub: "Excellent Mood",
+                emotion: "Joy",
+                pillClass: "pill-joy",
+                pillText: "JOYFUL",
+                sentiment: "Positive",
+                feedback: "Wonderful work today! Celebrating your accomplishments and balancing them with physical activity is a great habit. Try journaling what specifically helped you stay productive to repeat this momentum.",
+                keywords: ["accomplished", "happy", "run", "milestones", "productive"]
+            },
+            sad: {
+                text: "Lately it feels like I'm drifting away from my friends. I sat alone at lunch and felt so disconnected. The weather was gray and I just had no motivation to work.",
+                score: 3,
+                sub: "Low Mood",
+                emotion: "Sadness",
+                pillClass: "pill-sad",
+                pillText: "SADNESS",
+                sentiment: "Negative",
+                feedback: "It is completely okay to feel down or isolated at times. Remember that feelings of disconnection are temporary. Reach out to a loved one or try a small, low-pressure activity like a brief walk to gently shift your focus.",
+                keywords: ["alone", "disconnected", "no motivation", "sad", "gray"]
+            },
+            calm: {
+                text: "Spent the morning meditating and organizing my room. Things are quiet today. I brewed a warm cup of jasmine tea and watched the rain outside. I feel stable and rested.",
+                score: 7,
+                sub: "Balanced Mood",
+                emotion: "Calm",
+                pillClass: "pill-calm",
+                pillText: "CALM",
+                sentiment: "Neutral / Stable",
+                feedback: "Maintaining a clean space and spending quiet moments in mindfulness is incredibly grounding. This quiet, stable space is excellent for mental recovery. Enjoy this peaceful rhythm.",
+                keywords: ["meditating", "stable", "quiet", "jasmine tea", "rested"]
+            },
+            angry: {
+                text: "I am extremely annoyed. The project code kept breaking because of a tiny mismatch, and someone else committed buggy changes right before my demo. I felt my chest get tight.",
+                score: 2,
+                sub: "Highly Stressed",
+                emotion: "Anger / Frustration",
+                pillClass: "pill-anger",
+                pillText: "FRUSTRATED",
+                sentiment: "Negative / High Arousal",
+                feedback: "Tech blockages can be highly irritating, especially when team actions affect your workflow. Take deep, slow breaths to reduce the physical tension. A 5-minute step away from the screen will help clear the frustration.",
+                keywords: ["annoyed", "breaking", "buggy", "frustration", "tight"]
+            }
+        };
+
+        function loadPreset(key) {
+            const preset = PRESETS[key];
+            if (preset) {
+                document.getElementById('journalText').value = preset.text;
+                // Highlight choice
+                runMockAnalysis(preset);
+            }
+        }
+
+        function runMockAnalysis(predefinedPreset = null) {
+            const text = document.getElementById('journalText').value.trim();
+            if (!text) {
+                alert("Please type a journal entry first or choose one of the presets!");
+                return;
+            }
+
+            const btn = document.getElementById('analyzeBtn');
+            const spinner = document.getElementById('btnSpinner');
+            const btnText = document.getElementById('btnText');
+            const resultPanel = document.getElementById('resultPanel');
+
+            // Show loading state
+            btn.disabled = true;
+            spinner.style.display = 'inline-block';
+            btnText.textContent = ' AI Engine Analyzing...';
+            resultPanel.style.display = 'none';
+
+            setTimeout(() => {
+                let analysis = predefinedPreset;
+                
+                // If not using a preset, determine based on keyword search
+                if (!analysis) {
+                    const lowercaseText = text.toLowerCase();
+                    if (lowercaseText.includes('sad') || lowercaseText.includes('lonely') || lowercaseText.includes('cry') || lowercaseText.includes('depressed') || lowercaseText.includes('bad')) {
+                        analysis = PRESETS.sad;
+                    } else if (lowercaseText.includes('angry') || lowercaseText.includes('mad') || lowercaseText.includes('annoyed') || lowercaseText.includes('hate') || lowercaseText.includes('break')) {
+                        analysis = PRESETS.angry;
+                    } else if (lowercaseText.includes('calm') || lowercaseText.includes('meditate') || lowercaseText.includes('peace') || lowercaseText.includes('relax') || lowercaseText.includes('quiet')) {
+                        analysis = PRESETS.calm;
+                    } else {
+                        // Default to happy or generic positive
+                        analysis = PRESETS.happy;
+                    }
+                }
+
+                // Apply results to DOM
+                document.getElementById('resultScore').textContent = analysis.score;
+                document.getElementById('scoreSubText').textContent = analysis.sub;
+                document.getElementById('emotionVal').textContent = analysis.emotion;
+                
+                const pill = document.getElementById('emotionPill');
+                pill.className = `pill ${analysis.pillClass}`;
+                pill.textContent = analysis.pillText;
+
+                document.getElementById('sentimentVal').textContent = analysis.sentiment;
+                document.getElementById('feedbackVal').textContent = analysis.feedback;
+
+                // Build keywords
+                const container = document.getElementById('keywordsContainer');
+                container.innerHTML = '';
+                analysis.keywords.forEach(kw => {
+                    const b = document.createElement('span');
+                    b.className = 'keyword-badge';
+                    b.textContent = kw;
+                    container.appendChild(b);
+                });
+
+                // Show panel and restore button
+                resultPanel.style.display = 'block';
+                btn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.textContent = 'Analyze Journal Entry 🤖';
+
+                // Scroll smoothly to results
+                resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            }, 1200);
+        }
+    </script>
+</body>
+</html>
