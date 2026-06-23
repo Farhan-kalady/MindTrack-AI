@@ -12,6 +12,7 @@ from .serializers import JournalEntrySerializer
 from .ai_service import analyze_emotion
 from .models import EmotionAnalysis
 from drf_spectacular.utils import extend_schema
+from django_ratelimit.decorators import ratelimit
 
 
 @extend_schema(tags=['Journals'])
@@ -36,7 +37,7 @@ class JournalEntryViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return JournalEntry.objects.filter(
             user=self.request.user
-        ).order_by('-created_at')
+        ).select_related('emotionanalysis').order_by('-created_at')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -112,7 +113,15 @@ def get_wellness_tip(avg_score):
 )
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@ratelimit(key='user', rate='5/m', block=False)
 def analyze_entry(request, pk):
+    # Check rate limiting
+    if getattr(request, 'limited', False):
+        return Response(
+            {'error': 'Rate limit exceeded. You can only analyze 5 entries per minute.'},
+            status=429
+        )
+
     try:
         entry = JournalEntry.objects.get(
             pk=pk,

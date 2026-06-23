@@ -33,6 +33,29 @@ class TestJournalEntrySerializer:
         assert serializer.fields['created_at'].read_only is True
         assert serializer.fields['updated_at'].read_only is True
 
+    def test_validation_fails_for_empty_text(self):
+        data = {'entry_text': ''}
+        serializer = JournalEntrySerializer(data=data)
+        assert serializer.is_valid() is False
+        assert 'entry_text' in serializer.errors
+
+    def test_validation_fails_for_too_short_text(self):
+        data = {'entry_text': 'Short'}
+        serializer = JournalEntrySerializer(data=data)
+        assert serializer.is_valid() is False
+        assert 'entry_text' in serializer.errors
+
+    def test_validation_fails_for_too_long_text(self):
+        data = {'entry_text': 'a' * 5001}
+        serializer = JournalEntrySerializer(data=data)
+        assert serializer.is_valid() is False
+        assert 'entry_text' in serializer.errors
+
+    def test_validation_passes_for_valid_text(self):
+        data = {'entry_text': 'This is a valid length journal entry.'}
+        serializer = JournalEntrySerializer(data=data)
+        assert serializer.is_valid() is True
+
 
 @pytest.mark.django_db
 class TestEmotionAnalysisSerializer:

@@ -21,6 +21,15 @@ class JournalEntrySerializer(serializers.ModelSerializer):
     """
     emotionanalysis = EmotionAnalysisSerializer(read_only=True)
 
+    def validate_entry_text(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("Journal entry text cannot be empty or only spaces.")
+        if len(value.strip()) < 10:
+            raise serializers.ValidationError("Journal entry text must be at least 10 characters long.")
+        if len(value) > 5000:
+            raise serializers.ValidationError("Journal entry text cannot exceed 5000 characters.")
+        return value
+
     class Meta:
         model = JournalEntry
         fields = [

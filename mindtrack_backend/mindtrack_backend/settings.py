@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'drf_spectacular',   
+    'corsheaders',
     'journals',
     'users',
 ]
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -204,4 +206,15 @@ a personal journal and track their emotional well-being using Google Gemini AI.
         {'name': 'AI Analysis', 'description': 'AI emotion analysis endpoints'},
         {'name': 'Mood Analytics', 'description': 'Mood history and summary'},
     ],
+}
+
+# CORS Configuration
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Cache Configuration (required by django-ratelimit)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'mindtrack-cache',
+    }
 }

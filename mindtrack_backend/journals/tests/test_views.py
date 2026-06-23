@@ -98,6 +98,26 @@ class TestAnalyzeEntryView:
         assert entry.mood_score == 7
         assert entry.emotionanalysis.emotion == 'calm'
 
+    @patch('journals.views.analyze_emotion')
+    def test_analyze_entry_rate_limit(self, mock_analyze, auth_client, test_user):
+        from django.core.cache import cache
+        cache.clear() # Clear cache to ensure clean state
+        mock_analyze.return_value = {
+            'emotion': 'joy', 'sentiment': 'positive',
+            'mood_score': 9, 'feedback': 'Great!', 'keywords': []
+        }
+        entry = JournalEntry.objects.create(user=test_user, entry_text="Amazing day!")
+
+        # Make 5 requests (all should succeed)
+        for _ in range(5):
+            response = auth_client.post(f'/api/journals/{entry.id}/analyze/')
+            assert response.status_code == 200
+
+        # The 6th request should fail with 429
+        response = auth_client.post(f'/api/journals/{entry.id}/analyze/')
+        assert response.status_code == 429
+        assert 'error' in response.data
+
 
 @pytest.mark.django_db
 class TestHomePage:
