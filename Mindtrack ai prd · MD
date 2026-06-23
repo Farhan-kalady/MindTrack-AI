@@ -1,0 +1,191 @@
+# Product Requirements Document (PRD)
+## MindTrack AI — Mental Health Journal & Emotion Tracker
+
+**Author:** Mohammed Farhan K
+**Document type:** Internship Project — PRD
+**Source:** Derived from MindTrack AI Project Specification Document v1.1 (June 6, 2026)
+**Status:** Draft for review
+
+---
+
+## 1. Summary
+
+MindTrack AI is an AI-powered journaling and emotional wellness platform. Users write daily journal entries; the system uses an LLM (Gemini API) to detect the dominant emotion, score mood on a 0–10 scale, classify sentiment, and return a short personalized wellness suggestion. Over time, the platform aggregates this data into mood trends and weekly wellness reports, helping users build a habit of self-reflection.
+
+---
+
+## 2. What Exactly Are We Building?
+
+A full-stack web application consisting of:
+
+- **A backend API** (Django REST Framework) that handles authentication, journal CRUD, and orchestrates calls to the Gemini API for emotion/sentiment analysis.
+- **A managed data layer** (Supabase PostgreSQL + Supabase Auth) storing users, journal entries, and emotion-analysis records.
+- **An AI analysis pipeline** that takes raw journal text, sends it to the Gemini API, and parses the response into structured fields: emotion label, sentiment, mood score, and a wellness suggestion.
+- **Analytics endpoints** that turn stored entries into mood-history time series and weekly summary reports.
+- **API documentation** via Swagger / drf-spectacular, deployed on Render.
+
+In short: **a journal app where every entry is automatically "read" by AI and turned into emotional insight**, rather than a generic note-taking app.
+
+It is explicitly **not** (in this phase):
+- A clinical diagnostic tool.
+- A replacement for therapy or licensed mental health care.
+- A mobile-native app (web/API only for MVP — mobile is a future enhancement).
+- A real-time chat/companion bot.
+
+---
+
+## 3. Who Is It For?
+
+### Primary target users
+| Segment | Why they need this |
+|---|---|
+| **Students** | High academic stress, exam anxiety, limited access to counseling; want a low-friction way to track mood over a semester. |
+| **Working professionals** | Burnout, work stress, irregular schedules; want quick daily check-ins without seeing a therapist. |
+| **Job seekers** | Uncertainty and rejection-related stress during job search; want to track emotional resilience over time. |
+| **Individuals interested in emotional wellness** | General self-improvement audience already journaling (e.g., in notes apps) who want AI-assisted insight layered on top. |
+
+### User characteristics / assumptions
+- Comfortable using a web app and typing journal entries (not necessarily voice, in MVP).
+- Willing to share personal/emotional text with a third-party AI service (Google Gemini) — this has privacy implications that should be disclosed (see Section 9).
+- Not currently in acute mental health crisis requiring emergency intervention — the product is a **self-reflection tool**, not a crisis service.
+
+### Out of scope for v1
+- Clinicians/therapists as users (no therapist dashboard, no multi-user/clinical view).
+- Enterprise/HR wellness program buyers.
+- Children/minors (no age-gating or parental-consent flow is specified — should be explicitly restricted to adult users until designed).
+
+---
+
+## 4. What Problems Does It Solve?
+
+| Problem | How MindTrack AI addresses it |
+|---|---|
+| People don't consistently reflect on their emotional state. | Provides a simple, repeatable journaling habit loop (write → get instant feedback). |
+| People struggle to notice mood **patterns** over time (vs. one bad day). | Mood History + Weekly Mood Summary turn isolated entries into trends. |
+| Free-form journaling has no structure or feedback — it can feel like writing into a void. | Every entry returns an emotion label, sentiment, mood score, and a short personalized suggestion, so the act of journaling feels responsive. |
+| Generic mood trackers require manual self-rating, which is effortful and inconsistent. | AI infers mood score and emotion automatically from natural language, lowering the effort to log accurately. |
+| Mental wellness support is often inaccessible (cost, stigma, availability). | Provides a low-cost, private, always-available first layer of self-awareness support — explicitly positioned as a complement to, not replacement for, professional care. |
+
+---
+
+## 5. Goals & Success Metrics
+
+### Product objectives (from spec, retained)
+- Enable users to maintain daily journal entries.
+- Analyze emotions using AI.
+- Track mood trends over time.
+- Generate personalized wellness suggestions.
+- Promote self-awareness and emotional reflection.
+
+### Suggested success metrics (not in original spec — recommended additions)
+| Metric | Target signal |
+|---|---|
+| Activation rate | % of registered users who create ≥1 journal entry within 24 hours. |
+| Retention | % of users who log an entry in ≥3 distinct weeks within their first month. |
+| Engagement depth | Average entries per active user per week. |
+| AI reliability | % of `/api/analyze/{id}/` calls that return a valid, parseable emotion/mood/suggestion payload. |
+| Latency | p95 time from entry submission to analysis result returned. |
+| Perceived value (qualitative) | User feedback / survey on whether wellness suggestions feel relevant. |
+
+---
+
+## 6. Features: Must-Have vs. Nice-to-Have
+
+### 6.1 Must-Have (MVP — Phase 1)
+These map directly to the spec's MVP Feature List and are required for a usable v1 release.
+
+| # | Feature | Description |
+|---|---|---|
+| 1 | **User Registration & Login** | Secure authentication via Supabase Auth (email + password). |
+| 2 | **Create / View Journal Entries** | Full CRUD on personal journal entries (create, read, update, delete). |
+| 3 | **AI Emotion Detection** | Each entry analyzed via Gemini API to detect the dominant emotion (e.g., happy, sad, anxious). |
+| 4 | **Mood Score Tracking** | Numeric mood score (0–10) generated and stored per entry. |
+| 5 | **Basic Wellness Suggestion** | Short, AI-generated, personalized suggestion based on the detected emotion. |
+
+**Supporting must-have infrastructure** (implied by MVP, not optional):
+- Secure password hashing and token-based auth.
+- Persistent storage of users, entries, and analysis results (Supabase PostgreSQL).
+- Core REST endpoints: register, login, journal CRUD, trigger analysis (per Section 10 of the spec).
+- Basic error handling for AI API failures (timeouts, malformed responses) — **not explicitly in the original spec but required for MVP reliability.**
+
+### 6.2 Core (Phase 1.x — immediately follow-on, still "core" per spec Section 6 but beyond strict MVP)
+| Feature | Description |
+|---|---|
+| Sentiment Analysis | Classify entry as positive / negative / neutral, separate from emotion label. |
+| Weekly Mood Summary Generation | AI-generated narrative summary of the week's emotional trend. |
+| Mood History Tracking | Time-series view of mood scores via `/api/mood/history/`. |
+| Emotion Trends Visualization | Aggregated emotion frequency over time (e.g., dashboard/chart-ready data). |
+| Weekly Wellness Reports | Combines mood history + summary into a digestible report via `/api/mood/summary/`. |
+
+### 6.3 Nice-to-Have (Future Enhancements — explicitly deferred)
+| Feature | Description |
+|---|---|
+| Mobile Application (React Native) | Native mobile client for iOS/Android. |
+| Voice Journal Entries | Speech-to-text journaling instead of typing. |
+| Mood Prediction using Machine Learning | Predictive modeling of future mood based on historical patterns (distinct from the Gemini-based analysis used for current entries). |
+| Community Support Features | Peer support / social layer. |
+| Mental Wellness Resources Recommendation | Curated links/resources (articles, helplines, exercises) suggested based on user state. |
+
+### 6.4 Recommended additions not in original spec (flagged for product decision)
+These aren't in the source document but are typically expected in a mental-health-adjacent product and should be explicitly scoped in or out before build:
+- **Crisis-content safeguards**: if an entry indicates self-harm or suicidal ideation, the product should surface crisis resources rather than (or in addition to) a generic "wellness suggestion." This is a safety-critical gap in the current spec.
+- **Data privacy & consent disclosure**: explicit user consent that journal text is sent to a third-party AI provider (Google Gemini), plus a clear data-retention/deletion policy.
+- **Account/data deletion (GDPR/DPDP-style "right to be forgotten")**: ability for a user to permanently delete their account and all associated journal/analysis data.
+- **Rate limiting / abuse protection** on AI endpoints to control cost and prevent misuse.
+
+---
+
+## 7. User Stories (illustrative, derived from MVP features)
+
+- *As a new user*, I want to register and log in securely, so that my journal stays private to me.
+- *As a returning user*, I want to write a journal entry and immediately see my detected mood and a suggestion, so journaling feels responsive rather than passive.
+- *As a user reflecting on my week*, I want to see a mood history graph, so I can notice patterns (e.g., Mondays are consistently low-mood).
+- *As a user who's been inconsistent*, I want a weekly summary even if I only wrote 2–3 entries, so I still get value from partial use.
+- *As a privacy-conscious user*, I want to know what happens to my journal text before I write anything sensitive.
+
+---
+
+## 8. Technical Context (for reference — not a PRD requirement, summarized from spec)
+
+| Layer | Technology |
+|---|---|
+| Backend | Django REST Framework |
+| Database | Supabase PostgreSQL |
+| Auth | Supabase Auth |
+| AI | Gemini API (Gemini 1.5/2.0) |
+| API Docs | Swagger / drf-spectacular |
+| Deployment | Render |
+| VCS | Git & GitHub |
+
+**Flow:** User → Django REST API → Supabase PostgreSQL → Gemini API → Emotion Analysis → Saved to DB → Returned to User.
+
+Key entities: `Users`, `Journal Entries`, `Emotion Analysis` (1 entry → 1 analysis record, linked by foreign key). Full field-level schema is defined in the source spec (Section 9) and should be treated as the engineering source of truth alongside this PRD.
+
+---
+
+## 9. Risks & Open Questions
+
+| Risk / Question | Why it matters |
+|---|---|
+| Sending raw journal text to Gemini's API | Sensitive personal data leaving the system boundary — needs a documented data-handling and consent policy. |
+| No crisis-detection flow specified | A mental-wellness app that doesn't handle self-harm signals is a real safety gap, not just a feature gap. |
+| AI output reliability (malformed JSON, hallucinated emotion labels) | `/api/analyze/{id}/` needs defined fallback behavior if Gemini's response can't be parsed. |
+| Cost scaling | Gemini API calls per entry + per weekly summary will scale with active users; cost model isn't addressed in the spec. |
+| No age restriction defined | Should explicitly state a minimum age / adult-only audience given the sensitive subject matter. |
+
+---
+
+## 10. Out of Scope (v1)
+
+- Therapist/clinician-facing features or multi-party accounts.
+- Real-time chat or conversational AI companion.
+- Mobile native apps.
+- Predictive ML mood forecasting.
+- Community/social features.
+- Curated mental-health resource library.
+
+---
+
+## 11. Conclusion
+
+MindTrack AI's MVP is narrow and well-defined: register, write, get AI-analyzed emotion + mood score + a suggestion. The five MVP features (auth, journal CRUD, emotion detection, mood scoring, wellness suggestion) are sufficient to ship a coherent first version. Sentiment analysis, weekly summaries, and trend analytics are the natural next layer once the MVP loop is validated. Mobile, voice, ML prediction, and community features are appropriately deferred. The main gap to close before launch — beyond the original spec — is a clear policy on data privacy/consent and a basic safeguard for crisis-related content, given the sensitivity of the domain.
