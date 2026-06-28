@@ -646,6 +646,11 @@
                     <span class="preset-badge" onclick="loadPreset('angry')">😠 Frustrated & Annoyed</span>
                 </div>
 
+                <div class="privacy-disclaimer" style="font-size: 11px; color: var(--text-secondary); margin-top: -4px; margin-bottom: 16px; opacity: 0.85; line-height: 1.4; display: flex; align-items: flex-start; gap: 6px;">
+                    <span style="font-size: 13px; line-height: 1;">🔒</span>
+                    <span>By using the simulator, you consent to sending this text to Google Gemini for real-time emotional analysis. Your entry is not stored or used for training.</span>
+                </div>
+
                 <button id="analyzeBtn" class="btn btn-primary" style="width:100%; justify-content:center;" onclick="runMockAnalysis()">
                     <span class="spinner" id="btnSpinner"></span>
                     <span id="btnText">Analyze Journal Entry 🤖</span>
@@ -810,13 +815,133 @@
             }
         };
 
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         function loadPreset(key) {
             const preset = PRESETS[key];
             if (preset) {
                 document.getElementById('journalText').value = preset.text;
-                // Highlight choice
                 runMockAnalysis(preset);
             }
+        }
+
+        function getKeywordFallbackAnalysis(text) {
+            const lowercaseText = text.toLowerCase();
+            
+            // Check for negative markers followed by positive descriptors (with optional qualifiers like "very" or "really"), or missing positive indicators
+            const isNegatedPositive = /not\s+(?:\w+\s+){0,2}(happy|good|okay|ok|calm|peaceful|rested|great|well|fine)/.test(lowercaseText) || 
+                                     /no\s+(?:\w+\s+){0,2}(motivation|energy|hope|friends|joy)/.test(lowercaseText);
+                                     
+            if (isNegatedPositive || 
+                ['sad', 'lonely', 'cry', 'depressed', 'bad', 'alone', 'disconnected', 'unhappy', 'grief', 'hurts', 'pain', 'tired', 'exhausted', 'ruined'].some(w => lowercaseText.includes(w))) {
+                return PRESETS.sad;
+            } else if (['angry', 'mad', 'annoyed', 'hate', 'break', 'stress', 'tight', 'frustrated', 'irritated', 'error', 'enough', 'throwing', 'stuck', 'fail'].some(w => lowercaseText.includes(w))) {
+                return PRESETS.angry;
+            } else if (['calm', 'meditate', 'peace', 'relax', 'quiet', 'tea', 'stable', 'rested'].some(w => lowercaseText.includes(w))) {
+                return PRESETS.calm;
+            } else {
+                return PRESETS.happy;
+            }
+        }
+
+        function mapApiResponse(data) {
+            const emotion = data.emotion || 'neutral';
+            const moodScore = data.mood_score || 5;
+            
+            let pillClass = 'pill-calm';
+            let pillText = 'NEUTRAL';
+            const lowerEmotion = emotion.toLowerCase();
+            
+            if (['happy', 'excited', 'joy', 'grateful'].some(e => lowerEmotion.includes(e))) {
+                pillClass = 'pill-joy';
+                pillText = emotion.toUpperCase();
+            } else if (['sad', 'lonely', 'depressed', 'grief', 'down', 'disconnect'].some(e => lowerEmotion.includes(e))) {
+                pillClass = 'pill-sad';
+                pillText = emotion.toUpperCase();
+            } else if (['angry', 'frustrated', 'mad', 'hate', 'annoyed'].some(e => lowerEmotion.includes(e))) {
+                pillClass = 'pill-anger';
+                pillText = emotion.toUpperCase();
+            } else if (['calm', 'peaceful', 'relaxed', 'stable'].some(e => lowerEmotion.includes(e))) {
+                pillClass = 'pill-calm';
+                pillText = emotion.toUpperCase();
+            } else {
+                if (['anxious', 'nervous', 'worried', 'fear', 'stress'].some(e => lowerEmotion.includes(e))) {
+                    pillClass = 'pill-anger';
+                    pillText = emotion.toUpperCase();
+                } else {
+                    pillClass = 'pill-calm';
+                    pillText = emotion.toUpperCase();
+                }
+            }
+
+            let sub = 'Balanced Mood';
+            if (moodScore >= 8) {
+                sub = 'Excellent Mood';
+            } else if (moodScore >= 6) {
+                sub = 'Good Mood';
+            } else if (moodScore >= 4) {
+                sub = 'Balanced Mood';
+            } else {
+                sub = 'Low Mood';
+            }
+
+            return {
+                score: moodScore,
+                sub: sub,
+                emotion: emotion.charAt(0).toUpperCase() + emotion.slice(1),
+                pillClass: pillClass,
+                pillText: pillText,
+                sentiment: data.sentiment ? (data.sentiment.charAt(0).toUpperCase() + data.sentiment.slice(1)) : 'Neutral',
+                feedback: data.feedback || 'Thank you for reflecting on your day.',
+                keywords: data.keywords || []
+            };
+        }
+
+        function displayAnalysisResult(analysis) {
+            const btn = document.getElementById('analyzeBtn');
+            const spinner = document.getElementById('btnSpinner');
+            const btnText = document.getElementById('btnText');
+            const resultPanel = document.getElementById('resultPanel');
+
+            document.getElementById('resultScore').textContent = analysis.score;
+            document.getElementById('scoreSubText').textContent = analysis.sub;
+            document.getElementById('emotionVal').textContent = analysis.emotion;
+            
+            const pill = document.getElementById('emotionPill');
+            pill.className = `pill ${analysis.pillClass}`;
+            pill.textContent = analysis.pillText;
+
+            document.getElementById('sentimentVal').textContent = analysis.sentiment;
+            document.getElementById('feedbackVal').textContent = analysis.feedback;
+
+            const container = document.getElementById('keywordsContainer');
+            container.innerHTML = '';
+            analysis.keywords.forEach(kw => {
+                const b = document.createElement('span');
+                b.className = 'keyword-badge';
+                b.textContent = kw;
+                container.appendChild(b);
+            });
+
+            resultPanel.style.display = 'block';
+            btn.disabled = false;
+            spinner.style.display = 'none';
+            btnText.textContent = 'Analyze Journal Entry 🤖';
+
+            resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         function runMockAnalysis(predefinedPreset = null) {
@@ -831,62 +956,42 @@
             const btnText = document.getElementById('btnText');
             const resultPanel = document.getElementById('resultPanel');
 
-            // Show loading state
             btn.disabled = true;
             spinner.style.display = 'inline-block';
             btnText.textContent = ' AI Engine Analyzing...';
             resultPanel.style.display = 'none';
 
-            setTimeout(() => {
-                let analysis = predefinedPreset;
-                
-                // If not using a preset, determine based on keyword search
-                if (!analysis) {
-                    const lowercaseText = text.toLowerCase();
-                    if (lowercaseText.includes('sad') || lowercaseText.includes('lonely') || lowercaseText.includes('cry') || lowercaseText.includes('depressed') || lowercaseText.includes('bad')) {
-                        analysis = PRESETS.sad;
-                    } else if (lowercaseText.includes('angry') || lowercaseText.includes('mad') || lowercaseText.includes('annoyed') || lowercaseText.includes('hate') || lowercaseText.includes('break')) {
-                        analysis = PRESETS.angry;
-                    } else if (lowercaseText.includes('calm') || lowercaseText.includes('meditate') || lowercaseText.includes('peace') || lowercaseText.includes('relax') || lowercaseText.includes('quiet')) {
-                        analysis = PRESETS.calm;
-                    } else {
-                        // Default to happy or generic positive
-                        analysis = PRESETS.happy;
+            if (predefinedPreset) {
+                setTimeout(() => {
+                    displayAnalysisResult(predefinedPreset);
+                }, 800);
+            } else {
+                fetch('/api/simulate-analysis/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ text: text })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('API failed');
                     }
-                }
-
-                // Apply results to DOM
-                document.getElementById('resultScore').textContent = analysis.score;
-                document.getElementById('scoreSubText').textContent = analysis.sub;
-                document.getElementById('emotionVal').textContent = analysis.emotion;
-                
-                const pill = document.getElementById('emotionPill');
-                pill.className = `pill ${analysis.pillClass}`;
-                pill.textContent = analysis.pillText;
-
-                document.getElementById('sentimentVal').textContent = analysis.sentiment;
-                document.getElementById('feedbackVal').textContent = analysis.feedback;
-
-                // Build keywords
-                const container = document.getElementById('keywordsContainer');
-                container.innerHTML = '';
-                analysis.keywords.forEach(kw => {
-                    const b = document.createElement('span');
-                    b.className = 'keyword-badge';
-                    b.textContent = kw;
-                    container.appendChild(b);
+                    return response.json();
+                })
+                .then(data => {
+                    const analysis = mapApiResponse(data);
+                    displayAnalysisResult(analysis);
+                })
+                .catch(error => {
+                    console.warn('Backend analysis failed, falling back to keyword mock:', error);
+                    setTimeout(() => {
+                        const analysis = getKeywordFallbackAnalysis(text);
+                        displayAnalysisResult(analysis);
+                    }, 1000);
                 });
-
-                // Show panel and restore button
-                resultPanel.style.display = 'block';
-                btn.disabled = false;
-                spinner.style.display = 'none';
-                btnText.textContent = 'Analyze Journal Entry 🤖';
-
-                // Scroll smoothly to results
-                resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-            }, 1200);
+            }
         }
     </script>
 </body>

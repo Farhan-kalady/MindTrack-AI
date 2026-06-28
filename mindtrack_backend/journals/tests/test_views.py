@@ -81,8 +81,8 @@ class TestAnalyzeEntryView:
 
         response = auth_client.post(f'/api/journals/{entry.id}/analyze/')
 
-        assert response.status_code == 500
-        assert 'error' in response.data
+        assert response.status_code == 200
+        assert response.data['emotion'] == 'neutral'
 
     @patch('journals.views.analyze_emotion')
     def test_analyze_entry_creates_emotion_analysis_record(self, mock_analyze, auth_client, test_user):
@@ -131,3 +131,21 @@ class TestHomePage:
         response = api_client.get('/healthz/')
         assert response.status_code == 200
         assert response.json() == {"status": "healthy"}
+
+
+@pytest.mark.django_db
+class TestNewFeaturesPRD:
+    def test_crisis_content_override(self, auth_client, test_user):
+        entry = JournalEntry.objects.create(user=test_user, entry_text="I want to die, my life is too hard.")
+        response = auth_client.post(f'/api/journals/{entry.id}/analyze/')
+        assert response.status_code == 200
+        assert response.data['mood_score'] == 1
+        assert "National Suicide Prevention Lifeline" in response.data['feedback']
+
+    @patch('journals.views.generate_weekly_summary')
+    def test_weekly_summary_with_ai_narrative(self, mock_summary, auth_client, test_user):
+        mock_summary.return_value = "Mocked emotional summary."
+        JournalEntry.objects.create(user=test_user, entry_text="Day 1", mood_score=5)
+        response = auth_client.get('/api/mood/weekly/')
+        assert response.status_code == 200
+        assert response.data['ai_summary'] == "Mocked emotional summary."

@@ -11,4 +11,5 @@ urlpatterns = [
     path('mood/summary/', views.mood_summary, name='mood-summary'),
     path('mood/weekly/', views.weekly_summary, name='weekly-summary'),
     path('journals/<int:pk>/analyze/', views.analyze_entry, name='analyze-entry'),
+    path('simulate-analysis/', views.simulate_analysis, name='simulate-analysis'),
 ]
