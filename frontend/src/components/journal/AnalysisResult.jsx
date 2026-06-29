@@ -31,33 +31,33 @@ export default function AnalysisResult({ analysis }) {
         <div className="w-full animate-slide-up">
             {crisis_detected && <CrisisBanner />}
             
-            <div className="bg-neutral-800 border border-neutral-700 rounded-xl p-6 shadow-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
+            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-100 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
                 
                 <div className="flex items-center gap-2 mb-6">
-                    <BrainCircuit className="w-5 h-5 text-purple-400" />
-                    <h3 className="text-lg font-semibold text-white">AI Insights</h3>
+                    <BrainCircuit className="w-5 h-5 text-purple-600" />
+                    <h3 className="text-lg font-semibold text-gray-900">AI Insights</h3>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="bg-neutral-900/50 rounded-lg p-4 border border-neutral-800">
-                        <p className="text-xs text-neutral-500 mb-1 font-medium uppercase tracking-wider">Primary Emotion</p>
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                        <p className="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wider">Primary Emotion</p>
                         <span className={`inline-flex px-3 py-1 rounded-md text-sm font-medium capitalize border ${badgeColor}`}>
                             {emotion}
                         </span>
                     </div>
-                    <div className="bg-neutral-900/50 rounded-lg p-4 border border-neutral-800">
-                        <p className="text-xs text-neutral-500 mb-1 font-medium uppercase tracking-wider">Sentiment</p>
-                        <span className="text-white capitalize font-medium">{sentiment}</span>
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                        <p className="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wider">Sentiment</p>
+                        <span className="text-gray-900 capitalize font-medium">{sentiment}</span>
                     </div>
                 </div>
 
                 <div className="mb-6">
                     <div className="flex justify-between items-end mb-2">
-                        <p className="text-sm font-medium text-neutral-300">Mood Score</p>
-                        <span className="text-xl font-bold text-white">{mood_score}<span className="text-sm text-neutral-500 font-normal">/10</span></span>
+                        <p className="text-sm font-medium text-gray-700">Mood Score</p>
+                        <span className="text-xl font-bold text-gray-900">{mood_score}<span className="text-sm text-gray-500 font-normal">/10</span></span>
                     </div>
-                    <div className="w-full h-2 bg-neutral-900 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                         <div 
                             className={`h-full ${barColor} rounded-full transition-all duration-1000 ease-out`}
                             style={{ width: `${mood_score * 10}%` }}
@@ -65,12 +65,12 @@ export default function AnalysisResult({ analysis }) {
                     </div>
                 </div>
 
-                <div className="bg-purple-900/10 border border-purple-500/20 rounded-lg p-4 relative overflow-hidden">
+                <div className="bg-purple-50 border border-purple-100 rounded-lg p-4 relative overflow-hidden">
                     <div className="flex items-start gap-3 relative z-10">
-                        <Sparkles className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                        <Sparkles className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
                         <div>
-                            <h4 className="text-sm font-medium text-purple-300 mb-1">Wellness Suggestion</h4>
-                            <p className="text-sm text-neutral-300 leading-relaxed">
+                            <h4 className="text-sm font-medium text-purple-900 mb-1">Wellness Suggestion</h4>
+                            <p className="text-sm text-purple-800 leading-relaxed">
                                 {wellness_suggestion}
                             </p>
                         </div>

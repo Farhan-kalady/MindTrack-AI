@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import axiosInstance from '../api/axiosInstance';
 import { Bot, Send, User, Sparkles } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import { toast } from 'react-hot-toast';
 
 export default function AIAssistant() {
     const { user } = useAuth();
@@ -23,7 +26,7 @@ export default function AIAssistant() {
         scrollToBottom();
     }, [messages, isTyping]);
 
-    const handleSend = (e) => {
+    const handleSend = async (e) => {
         e.preventDefault();
         if (!input.trim()) return;
 
@@ -32,37 +35,47 @@ export default function AIAssistant() {
         setInput('');
         setIsTyping(true);
 
-        // Mock AI response for now
-        setTimeout(() => {
+        try {
+            const res = await axiosInstance.post('/chat/', { message: input });
             const aiMsg = {
                 id: Date.now() + 1,
                 role: 'assistant',
-                content: "I'm currently in demo mode, but in the future, I will use Google Gemini function calling to search through your past journal entries, identify complex emotional patterns, and provide personalized cognitive behavioral therapy (CBT) inspired insights."
+                content: res.data.response || "I couldn't generate a response."
             };
             setMessages(prev => [...prev, aiMsg]);
+        } catch (error) {
+            console.error("Chat error:", error);
+            toast.error("Failed to connect to the AI Assistant.");
+            const errorMsg = {
+                id: Date.now() + 1,
+                role: 'assistant',
+                content: "I'm having trouble connecting right now. Please try again later."
+            };
+            setMessages(prev => [...prev, errorMsg]);
+        } finally {
             setIsTyping(false);
-        }, 1500);
+        }
     };
 
     return (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[calc(100vh-4rem)] flex flex-col animate-slide-up">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[calc(100vh-64px)] flex flex-col bg-[#F5F5FA] animate-slide-up">
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-2">
-                        <Bot className="w-8 h-8 text-purple-500" />
-                        AI Companion
+                    <h1 className="text-3xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+                        <Bot className="w-8 h-8 text-purple-600" />
+                        AI Wellness Assistant
                     </h1>
-                    <p className="text-neutral-400 mt-1">Chat with your personalized AI about your mental well-being.</p>
+                    <p className="text-gray-500 mt-1">Chat with your personalized AI about your mental well-being.</p>
                 </div>
-                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium">
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-100 border border-purple-200 text-purple-700 text-sm font-medium shadow-sm">
                     <Sparkles className="w-4 h-4" />
                     <span>Gemini Powered</span>
                 </div>
             </div>
 
-            <div className="flex-grow bg-neutral-900 border border-neutral-800 rounded-2xl shadow-xl flex flex-col overflow-hidden relative">
+            <div className="flex-grow bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-col overflow-hidden relative">
                 {/* Background glow */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/5 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-50 rounded-full blur-[100px] pointer-events-none" />
 
                 {/* Chat Area */}
                 <div className="flex-grow overflow-y-auto p-4 sm:p-6 space-y-6 scroll-smooth relative z-10">
@@ -71,21 +84,23 @@ export default function AIAssistant() {
                             <div className={`flex max-w-[85%] sm:max-w-[75%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} gap-3 sm:gap-4`}>
                                 <div className="flex-shrink-0">
                                     {msg.role === 'user' ? (
-                                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-neutral-700 flex items-center justify-center">
-                                            <User className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-300" />
+                                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200">
+                                            <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
                                         </div>
                                     ) : (
-                                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-600/20 flex items-center justify-center border border-purple-500/30">
-                                            <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
+                                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-100 flex items-center justify-center border border-purple-200">
+                                            <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                                         </div>
                                     )}
                                 </div>
-                                <div className={`rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 shadow-sm text-sm sm:text-base ${
+                                <div className={`rounded-2xl px-4 py-3 sm:px-5 sm:py-4 shadow-sm text-sm sm:text-base ${
                                     msg.role === 'user' 
                                     ? 'bg-purple-600 text-white rounded-tr-sm' 
-                                    : 'bg-neutral-800 border border-neutral-700 text-neutral-200 rounded-tl-sm'
+                                    : 'bg-gray-50 border border-gray-100 text-gray-800 rounded-tl-sm'
                                 }`}>
-                                    <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                                    <div className="prose prose-sm sm:prose-base max-w-none prose-p:leading-relaxed prose-pre:bg-gray-800 prose-pre:text-gray-100">
+                                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -95,11 +110,11 @@ export default function AIAssistant() {
                         <div className="flex justify-start">
                             <div className="flex max-w-[80%] gap-4">
                                 <div className="flex-shrink-0">
-                                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-600/20 flex items-center justify-center border border-purple-500/30">
-                                        <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
+                                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-100 flex items-center justify-center border border-purple-200">
+                                        <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                                     </div>
                                 </div>
-                                <div className="rounded-2xl px-5 py-4 bg-neutral-800 border border-neutral-700 rounded-tl-sm flex items-center gap-1.5">
+                                <div className="rounded-2xl px-5 py-4 bg-gray-50 border border-gray-100 rounded-tl-sm flex items-center gap-1.5 shadow-sm">
                                     <span className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '0ms' }} />
                                     <span className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '150ms' }} />
                                     <span className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '300ms' }} />
@@ -111,19 +126,19 @@ export default function AIAssistant() {
                 </div>
 
                 {/* Input Area */}
-                <div className="p-4 border-t border-neutral-800 bg-neutral-900/80 backdrop-blur-md relative z-10">
+                <div className="p-4 border-t border-gray-100 bg-white/80 backdrop-blur-md relative z-10">
                     <form onSubmit={handleSend} className="relative flex items-center">
                         <input
                             type="text"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Ask about your emotional patterns..."
-                            className="w-full bg-neutral-800 border border-neutral-700 rounded-full pl-6 pr-14 py-3 sm:py-3.5 text-sm sm:text-base text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all shadow-inner"
+                            className="w-full bg-gray-50 border border-gray-200 rounded-full pl-6 pr-14 py-3 sm:py-3.5 text-sm sm:text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all shadow-sm"
                         />
                         <button
                             type="submit"
                             disabled={!input.trim() || isTyping}
-                            className="absolute right-2 bg-purple-600 hover:bg-purple-700 disabled:bg-neutral-700 disabled:text-neutral-500 text-white p-2 rounded-full transition-colors flex items-center justify-center"
+                            className="absolute right-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-200 disabled:text-gray-400 text-white p-2 rounded-full transition-colors flex items-center justify-center shadow-sm"
                         >
                             <Send className="w-4 h-4 ml-0.5" />
                         </button>
