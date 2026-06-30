@@ -24,7 +24,7 @@ def analyze_entry(text: str) -> dict:
     """Analyze a journal entry. Always returns a dict — never raises."""
     try:
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
+            model_name="gemini-2.5-flash",
             generation_config={"response_mime_type": "application/json"}
         )
         prompt = f"""
@@ -65,23 +65,23 @@ Return ONLY the JSON. No explanation. No markdown.
         return result
 
     except ResourceExhausted:
-        logger.warning("Gemini quota exceeded")
+        logger.warning("Gemini quota exceeded", exc_info=True)
         return {**FALLBACK, "error_type": "quota_exceeded"}
     except DeadlineExceeded:
-        logger.warning("Gemini timeout")
+        logger.warning("Gemini timeout", exc_info=True)
         return {**FALLBACK, "error_type": "timeout"}
     except (json.JSONDecodeError, KeyError, ValueError) as e:
-        logger.error(f"Gemini parse error: {e}")
+        logger.error(f"Gemini parse error: {e}", exc_info=True)
         return {**FALLBACK, "error_type": "parse_error"}
     except Exception as e:
-        logger.error(f"Gemini unexpected error: {e}")
+        logger.error(f"Gemini unexpected error: {e}", exc_info=True)
         return {**FALLBACK, "error_type": "unknown"}
 
 def generate_weekly_summary(entries: list[dict]) -> dict:
     """Generate weekly mood summary from a list of entry dicts."""
     try:
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
+            model_name="gemini-2.5-flash",
             generation_config={"response_mime_type": "application/json"}
         )
         entries_text = "\n\n".join([
@@ -109,7 +109,7 @@ Entries:
                 raw = raw[4:]
         return json.loads(raw.strip())
     except Exception as e:
-        logger.error(f"Weekly summary error: {e}")
+        logger.error(f"Weekly summary error: {e}", exc_info=True)
         return {
             "dominant_emotion": "neutral", "average_mood_score": 5.0,
             "mood_trend": "stable", "week_summary": "Could not generate summary.",
