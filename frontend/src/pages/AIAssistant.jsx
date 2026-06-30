@@ -45,7 +45,6 @@ export default function AIAssistant() {
             setMessages(prev => [...prev, aiMsg]);
         } catch (error) {
             console.error("Chat error:", error);
-            toast.error("Failed to connect to the AI Assistant.");
             const errorMsg = {
                 id: Date.now() + 1,
                 role: 'assistant',

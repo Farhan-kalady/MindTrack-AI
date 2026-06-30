@@ -41,13 +41,13 @@ class AssistantChatView(APIView):
             return Response({'reply': "Please provide a message."}, status=400)
 
         # Get last 10 entries with their analysis
-        entries = JournalEntry.objects.filter(user=request.user.profile).select_related('emotionanalysis').order_by('-created_at')[:10]
+        entries = JournalEntry.objects.filter(user=request.user.profile).select_related('analysis').order_by('-created_at')[:10]
         
         history_lines = []
         for e in entries:
             date_str = e.created_at.strftime('%Y-%m-%d')
-            if hasattr(e, 'emotionanalysis'):
-                history_lines.append(f"[{date_str}] Emotion: {e.emotionanalysis.emotion}, Score: {e.emotionanalysis.mood_score}/10, Entry snippet: {e.content[:100]}...")
+            if hasattr(e, 'analysis'):
+                history_lines.append(f"[{date_str}] Emotion: {e.analysis.emotion}, Score: {e.analysis.mood_score}/10, Entry snippet: {e.content[:100]}...")
             else:
                 history_lines.append(f"[{date_str}] Entry snippet: {e.content[:100]}...")
                 
