@@ -31,7 +31,7 @@ export default function Analytics() {
             try {
                 const res = await axiosInstance.get(`/mood/history/?days=${days}`);
                 const historyData = res.data.map(item => ({
-                    date: new Date(item.entry__created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                    date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
                     score: item.mood_score,
                     emotion: item.emotion
                 }));
@@ -174,7 +174,7 @@ export default function Analytics() {
                         <div className="bg-neutral-900/60 backdrop-blur-sm border border-neutral-700/50 rounded-xl p-6">
                             <div className="flex flex-wrap items-center gap-4 mb-6">
                                 <span className="bg-purple-500/20 text-purple-300 border border-purple-500/30 px-3 py-1 rounded-full text-sm font-medium">
-                                    Week of {new Date(report.week_start_date).toLocaleDateString()}
+                                    Week of {new Date(report.week_start).toLocaleDateString()}
                                 </span>
                                 <span className="text-neutral-400 text-sm">
                                     Dominant Emotion: <strong className="text-white capitalize">{report.dominant_emotion}</strong>
@@ -184,7 +184,7 @@ export default function Analytics() {
                                 </span>
                             </div>
                             <div className="text-neutral-300 space-y-4">
-                                {report.summary_text.split('\n').map((paragraph, idx) => (
+                                {report.week_summary && report.week_summary.split('\n').map((paragraph, idx) => (
                                     paragraph.trim() && <p key={idx} className="leading-relaxed">{paragraph}</p>
                                 ))}
                             </div>
