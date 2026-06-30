@@ -36,11 +36,11 @@ export default function AIAssistant() {
         setIsTyping(true);
 
         try {
-            const res = await axiosInstance.post('/chat/', { message: input });
+            const res = await axiosInstance.post('/assistant/chat/', { message: input });
             const aiMsg = {
                 id: Date.now() + 1,
                 role: 'assistant',
-                content: res.data.response || "I couldn't generate a response."
+                content: res.data.reply || "I couldn't generate a response."
             };
             setMessages(prev => [...prev, aiMsg]);
         } catch (error) {

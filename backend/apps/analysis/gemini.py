@@ -115,3 +115,34 @@ Entries:
             "mood_trend": "stable", "week_summary": "Could not generate summary.",
             "weekly_suggestion": "Keep journaling consistently.", "error": True
         }
+
+def chat_with_assistant(history_text: str, user_message: str) -> str:
+    """Generate a response for the AI wellness assistant using user's history."""
+    try:
+        model = genai.GenerativeModel(
+            model_name="gemini-2.5-flash",
+        )
+        prompt = f"""
+You are the MindTrack AI Wellness Assistant. Your goal is to be a supportive, empathetic, and insightful guide.
+Use the following recent mood history (journal entries, emotions, and scores) to provide personalized insights to the user.
+Do NOT give generic advice if you can reference their actual data.
+
+User's Recent History:
+{history_text}
+
+User's Message:
+{user_message}
+
+Provide a thoughtful and helpful response. Use markdown for formatting.
+"""
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except ResourceExhausted:
+        logger.warning("Gemini quota exceeded during chat", exc_info=True)
+        return "I'm sorry, but my capacity is currently full (Quota Exceeded). Please try again in a few minutes."
+    except DeadlineExceeded:
+        logger.warning("Gemini timeout during chat", exc_info=True)
+        return "I'm having trouble connecting right now (Timeout). Please try again later."
+    except Exception as e:
+        logger.error(f"Gemini unexpected error during chat: {e}", exc_info=True)
+        return "An unexpected error occurred while generating my response. Please try again."

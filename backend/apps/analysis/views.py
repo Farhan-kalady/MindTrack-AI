@@ -30,3 +30,31 @@ class AnalyzeEntryView(APIView):
             }
         )
         return Response(EmotionAnalysisSerializer(analysis).data)
+
+@method_decorator(ratelimit(key='user', rate='20/h', method='POST', block=True), name='dispatch')
+class AssistantChatView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user_message = request.data.get('message', '').strip()
+        if not user_message:
+            return Response({'reply': "Please provide a message."}, status=400)
+
+        # Get last 10 entries with their analysis
+        entries = JournalEntry.objects.filter(user=request.user.profile).select_related('emotionanalysis').order_by('-created_at')[:10]
+        
+        history_lines = []
+        for e in entries:
+            date_str = e.created_at.strftime('%Y-%m-%d')
+            if hasattr(e, 'emotionanalysis'):
+                history_lines.append(f"[{date_str}] Emotion: {e.emotionanalysis.emotion}, Score: {e.emotionanalysis.mood_score}/10, Entry snippet: {e.content[:100]}...")
+            else:
+                history_lines.append(f"[{date_str}] Entry snippet: {e.content[:100]}...")
+                
+        history_text = "\n".join(history_lines) if history_lines else "No previous journal entries found."
+
+        from .gemini import chat_with_assistant
+        reply = chat_with_assistant(history_text, user_message)
+
+        return Response({'reply': reply})
+
