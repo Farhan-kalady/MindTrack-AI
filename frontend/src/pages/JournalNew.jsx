@@ -26,7 +26,10 @@ export default function JournalNew() {
 
     const handleSubmit = async (e) => {
         if (e) e.preventDefault();
-        if (!content.trim() || content.trim().length < 10) return;
+        if (!content.trim() || content.trim().length < 10) {
+            toast.error('Please write something in your journal before saving (at least 10 characters).');
+            return;
+        }
         
         setIsSaving(true);
         try {
