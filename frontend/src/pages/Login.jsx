@@ -17,7 +17,7 @@ export default function Login() {
         try {
             await login(email, password);
             toast.success("Welcome back!");
-            navigate('/dashboard');
+            navigate('/');
         } catch (err) {
             toast.error(err.response?.data?.error || "Failed to login. Check your credentials.");
         } finally {

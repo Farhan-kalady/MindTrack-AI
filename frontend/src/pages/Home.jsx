@@ -1,99 +1,96 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ArrowRight, BrainCircuit, LineChart, Sparkles } from 'lucide-react';
+import { PenSquare, Smile } from 'lucide-react';
+import axiosInstance from '../api/axiosInstance';
 
 export default function Home() {
     const { user } = useAuth();
+    const [entriesCount, setEntriesCount] = useState(0);
+    const [avgScore, setAvgScore] = useState(0);
+
+    useEffect(() => {
+        if (user) {
+            axiosInstance.get('/mood/sparkline/?days=7')
+                .then(res => {
+                    const data = res.data;
+                    if (data && data.scores) {
+                        setEntriesCount(data.scores.length);
+                        const total = data.scores.reduce((a, b) => a + b, 0);
+                        setAvgScore(data.scores.length > 0 ? (total / data.scores.length).toFixed(1) : 0);
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+    }, [user]);
 
     return (
-        <div className="min-h-[calc(100vh-4rem)] flex flex-col justify-center relative overflow-hidden">
-            {/* Background elements */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/20 blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-600/10 blur-[120px] pointer-events-none" />
-
+        <div className="min-h-[calc(100vh-64px)] flex flex-col justify-center relative bg-[#F5F5FA]">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-12 lg:py-20 relative z-10">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center" style={{ gridTemplateColumns: '1fr 1fr' }}>
                     
                     {/* Left Column: Copy & CTA */}
-                    <div className="space-y-8 text-center lg:text-left">
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-4">
-                            <Sparkles className="w-4 h-4" />
-                            <span>Powered by Google Gemini</span>
-                        </div>
-                        
-                        <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight text-white leading-tight">
-                            Your Mind, <br className="hidden lg:block" />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">Analyzed.</span>
+                    <div className="space-y-6 text-center lg:text-left">
+                        <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-tight">
+                            <span className="text-[#111827]">Understand your mind.</span><br />
+                            <span className="text-[#7C3AED]">Nourish</span>{' '}
+                            <span className="text-[#10B981]">your</span>{' '}
+                            <span className="text-[#111827]">well-being.</span>
                         </h1>
                         
-                        <p className="text-lg lg:text-xl text-neutral-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                            Journal your thoughts and let AI uncover your emotional patterns. Gain profound insights into your mental well-being automatically, every single day.
+                        <p className="text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                            MindTrack AI helps you track your moods, maintain journals, analyze patterns and get AI-powered insights for a healthier, happier you.
                         </p>
                         
                         <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
                             <Link 
-                                to={user ? "/dashboard" : "/register"} 
-                                className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-medium transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2 hover:-translate-y-0.5"
+                                to="/mood" 
+                                className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white font-medium transition-all shadow-lg flex items-center justify-center gap-2"
                             >
-                                Start Journaling
-                                <ArrowRight className="w-4 h-4" />
+                                📊 Track My Mood
                             </Link>
                             <Link 
-                                to="/features" 
-                                className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-white font-medium transition-all flex items-center justify-center gap-2"
+                                to="/journal/new" 
+                                className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium transition-all flex items-center justify-center gap-2"
                             >
-                                View Demo
+                                <PenSquare className="w-4 h-4" />
+                                Write in Journal
                             </Link>
                         </div>
-                    </div>
 
-                    {/* Right Column: Visual/Stats Cards */}
-                    <div className="relative h-full min-h-[400px] flex items-center justify-center lg:justify-end">
-                        <div className="relative w-full max-w-md perspective-1000">
-                            {/* Floating Card 1 */}
-                            <div className="absolute top-10 -left-10 lg:-left-20 w-64 bg-neutral-800/90 backdrop-blur-xl border border-neutral-700 rounded-2xl p-5 shadow-2xl animate-float-slow z-20">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center">
-                                        <BrainCircuit className="w-6 h-6 text-purple-400" />
-                                    </div>
-                                    <div>
-                                        <p className="text-2xl font-bold text-white">10+</p>
-                                        <p className="text-sm text-neutral-400 font-medium">Emotions tracked</p>
-                                    </div>
+                        <div className="flex gap-4 pt-8">
+                            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 flex-1">
+                                <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                                    <PenSquare className="w-5 h-5 text-purple-600" />
+                                </div>
+                                <div>
+                                    <p className="text-xl font-bold text-[#111827]">{entriesCount}</p>
+                                    <p className="text-xs text-gray-500 font-medium">Entries (7 days)</p>
                                 </div>
                             </div>
-
-                            {/* Floating Card 2 */}
-                            <div className="absolute bottom-10 -right-4 w-64 bg-neutral-800/90 backdrop-blur-xl border border-neutral-700 rounded-2xl p-5 shadow-2xl animate-float-delayed z-20">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                                        <LineChart className="w-6 h-6 text-emerald-400" />
-                                    </div>
-                                    <div>
-                                        <p className="text-2xl font-bold text-white">Weekly</p>
-                                        <p className="text-sm text-neutral-400 font-medium">AI Insights & Trends</p>
-                                    </div>
+                            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 flex-1">
+                                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                                    <Smile className="w-5 h-5 text-emerald-600" />
+                                </div>
+                                <div>
+                                    <p className="text-xl font-bold text-[#111827]">{avgScore} / 10</p>
+                                    <p className="text-xs text-gray-500 font-medium">Avg Mood Score</p>
                                 </div>
                             </div>
-
-                            {/* Center App Mockup */}
-                            <div className="relative w-full aspect-[4/5] bg-gradient-to-br from-neutral-800 to-neutral-900 border border-neutral-700 rounded-3xl overflow-hidden shadow-2xl opacity-80 rotate-3 transform transition-transform hover:rotate-0 duration-500">
-                                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", backgroundSize: "20px 20px" }}></div>
-                                <div className="p-6 relative z-10">
-                                    <div className="w-full h-4 bg-neutral-800 rounded-full mb-6"></div>
-                                    <div className="space-y-4">
-                                        <div className="w-3/4 h-8 bg-neutral-700 rounded-lg"></div>
-                                        <div className="w-full h-24 bg-neutral-800 rounded-lg"></div>
-                                        <div className="w-1/2 h-8 bg-purple-600/30 rounded-lg"></div>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
 
+                    {/* Right Column: Hero Image */}
+                    <div className="relative h-full flex items-center justify-center lg:justify-end">
+                        <img 
+                            src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2000&auto=format&fit=crop" 
+                            alt="Wellness Illustration" 
+                            className="w-full h-auto max-h-[500px] object-cover rounded-3xl shadow-2xl"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
+

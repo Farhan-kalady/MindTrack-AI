@@ -23,11 +23,16 @@ export default function Register() {
         
         setLoading(true);
         try {
-            await register(email, password, name, consentGiven);
+            await register(email.trim(), password, name, consentGiven);
             toast.success("Account created successfully!");
-            navigate('/dashboard');
+            navigate('/journal');
         } catch (err) {
-            toast.error(err.response?.data?.error || "Registration failed. Try again.");
+            const errorMsg = err.response?.data?.error?.toLowerCase() || "";
+            if (errorMsg.includes("already registered") || errorMsg.includes("exists")) {
+                toast.error("Email already exists");
+            } else {
+                toast.error(err.response?.data?.error || "Registration failed. Try again.");
+            }
         } finally {
             setLoading(false);
         }

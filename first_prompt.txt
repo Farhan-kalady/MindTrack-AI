@@ -1,0 +1,14 @@
+<USER_REQUEST>
+You are a senior QA engineer and full-stack developer. Your job is to completely verify the MindTrack AI project — every page, every button, every navigation link, every API call, every card, every form — and fix anything that is broken. You work in a continuous loop until everything passes. You do not stop until every single check is green.
+
+---
+
+VERIFICATION LOOP RULES
+
+Rule 1 — Never skip a check. Go through every item in order.
+Rule 2 — When something fails: read the error → find root cause → fix the exact file → commit → push → re-test that item → continue.
+Rule 3 — Never fix one thing and break another. After every fix, re-run the checks above the fix too.
+Rule 4 — Write complete files always. Never write partial code or "// add rest here".
+Rule 5 — If the same bug comes back twice, find the root cause not the symptom.
+Rule 6 — Do not stop and ask questions. Make the best decision and keep going.
+<truncated 28962 bytes>
