@@ -52,7 +52,8 @@ export default function Dashboard() {
                 // Fetch Mood History based on days
                 const historyUrl = days === 'all' ? '/mood/history/' : `/mood/history/?days=${days}`;
                 const historyRes = await axiosInstance.get(historyUrl);
-                const historyData = historyRes.data.map(item => ({
+                const historyData = historyRes.data.map((item, index) => ({
+                    id: index,
                     date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
                     score: item.mood_score,
                     emotion: item.emotion
@@ -193,9 +194,10 @@ export default function Dashboard() {
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart data={moodHistory} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
-                                        <XAxis dataKey="date" stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
+                                        <XAxis dataKey="id" tickFormatter={(id) => moodHistory[id]?.date} stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
                                         <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} />
                                         <RechartsTooltip 
+                                            labelFormatter={(label) => moodHistory[label]?.date}
                                             contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e5e7eb', borderRadius: '0.5rem', color: '#111827', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
                                             itemStyle={{ color: '#7c3aed' }}
                                         />

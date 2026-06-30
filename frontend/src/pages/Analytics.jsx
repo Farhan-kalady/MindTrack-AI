@@ -30,7 +30,8 @@ export default function Analytics() {
             setLoadingChart(true);
             try {
                 const res = await axiosInstance.get(`/mood/history/?days=${days}`);
-                const historyData = res.data.map(item => ({
+                const historyData = res.data.map((item, index) => ({
+                    id: index,
                     date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
                     score: item.mood_score,
                     emotion: item.emotion
@@ -118,9 +119,10 @@ export default function Analytics() {
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={moodHistory} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
-                                <XAxis dataKey="date" stroke="#a3a3a3" fontSize={12} tickLine={false} axisLine={false} />
+                                <XAxis dataKey="id" tickFormatter={(id) => moodHistory[id]?.date} stroke="#a3a3a3" fontSize={12} tickLine={false} axisLine={false} />
                                 <YAxis stroke="#a3a3a3" fontSize={12} tickLine={false} axisLine={false} domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} />
                                 <RechartsTooltip 
+                                    labelFormatter={(label) => moodHistory[label]?.date}
                                     contentStyle={{ backgroundColor: '#262626', borderColor: '#404040', borderRadius: '0.5rem', color: '#fff' }}
                                     itemStyle={{ color: '#c084fc' }}
                                 />
