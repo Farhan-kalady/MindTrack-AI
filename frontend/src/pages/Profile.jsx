@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
@@ -12,6 +12,19 @@ export default function Profile() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [deleteConfirmation, setDeleteConfirmation] = useState('');
     const [isDeleting, setIsDeleting] = useState(false);
+    const [profileData, setProfileData] = useState(null);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const res = await axiosInstance.get('/users/me/');
+                setProfileData(res.data);
+            } catch (err) {
+                console.error("Failed to fetch profile", err);
+            }
+        };
+        fetchProfile();
+    }, []);
 
     const handleLogout = async () => {
         await logout();
@@ -64,7 +77,7 @@ export default function Profile() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="bg-neutral-900/50 rounded-lg p-4 border border-neutral-800">
                                 <p className="text-xs text-neutral-500 font-medium uppercase tracking-wider mb-1">Current Streak</p>
-                                <p className="text-2xl font-bold text-white">{user?.streak_count || 0} <span className="text-sm font-normal text-neutral-400">days</span></p>
+                                <p className="text-2xl font-bold text-white">{profileData?.current_streak || 0} <span className="text-sm font-normal text-neutral-400">days</span></p>
                             </div>
                             <div className="bg-neutral-900/50 rounded-lg p-4 border border-neutral-800">
                                 <p className="text-xs text-neutral-500 font-medium uppercase tracking-wider mb-1">AI Data Consent</p>

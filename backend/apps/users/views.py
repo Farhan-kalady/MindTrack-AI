@@ -85,6 +85,11 @@ class LogoutView(APIView):
 class CurrentUserView(APIView):
     permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        from .serializers import UserProfileSerializer
+        serializer = UserProfileSerializer(request.user.profile)
+        return Response(serializer.data)
+
     def delete(self, request):
         try:
             supabase_admin = create_client(settings.SUPABASE_URL, settings.SUPABASE_SERVICE_ROLE_KEY)
