@@ -1,0 +1,21 @@
+<USER_REQUEST>
+@[d:\SOFINS\Github\MindTrack AI\PRD.md] @[d:\SOFINS\Github\MindTrack AI\DesignDoc.md] @[d:\SOFINS\Github\MindTrack AI\TechStack.md] 
+
+You are a senior full-stack engineer. I am giving you three documents that fully define a product called MindTrack AI — a mental health journal and emotion tracker.
+
+Read all three documents carefully before writing a single line of code:
+
+1. PRD.md — what to build, features, API endpoints, data models, risks
+2. DesignDoc.md — color system, typography, components, page layouts, user flows
+3. TechStack.md — exact packages, folder structure, environment variables, deployment config, working code snippets
+
+After reading, confirm you have understood by giving me:
+- A one-paragraph summary of what MindTrack AI does
+- The complete folder structure you will create (frontend/ and backend/ combined)
+- The order in which you will build things (your build sequence, step by step)
+
+Then wait for me to say "start" before writing any code.
+
+---
+
+<truncated 5792 bytes>

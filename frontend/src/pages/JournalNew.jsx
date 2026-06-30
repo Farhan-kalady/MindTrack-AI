@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../api/axiosInstance';
+import api from '../api/axiosInstance';
 import { useAuth } from '../context/AuthContext';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import AnalysisResult from '../components/journal/AnalysisResult';
@@ -13,10 +13,10 @@ export default function JournalNew() {
     
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [saving, setSaving] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     
     // AI State
-    const [analyzing, setAnalyzing] = useState(false);
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [analysisResult, setAnalysisResult] = useState(null);
     const [hasAnalyzed, setHasAnalyzed] = useState(false);
     const [analysisFailed, setAnalysisFailed] = useState(false);
@@ -24,45 +24,32 @@ export default function JournalNew() {
 
     const wordCount = content.trim().split(/\s+/).filter(word => word.length > 0).length;
 
-    const handleSaveAndAnalyze = async (e) => {
-        e.preventDefault();
-        if (content.trim().length < 10) {
-            toast.error("Please write at least 10 characters.");
-            return;
-        }
-
-        setSaving(true);
-        let currentEntryId = entryId;
+    const handleSubmit = async (e) => {
+        if (e) e.preventDefault();
+        if (!content.trim() || content.trim().length < 10) return;
+        
+        setIsSaving(true);
         try {
-            if (!currentEntryId) {
-                const saveRes = await axiosInstance.post('/entries/', { title, content });
-                currentEntryId = saveRes.data.id;
-                setEntryId(currentEntryId);
-                toast.success("Journal saved!");
-            }
-            setSaving(false);
-            handleAnalyze(currentEntryId);
-        } catch (err) {
-            console.error(err);
-            toast.error("Failed to save entry.");
-            setSaving(false);
-        }
-    };
-
-    const handleAnalyze = async (id) => {
-        setAnalyzing(true);
-        setAnalysisFailed(false);
-        try {
-            const analyzeRes = await axiosInstance.post(`/analyze/${id}/`);
-            setAnalysisResult(analyzeRes.data);
+            const response = await api.post('/entries/', {
+                title: title.trim(),
+                content: content.trim(),
+            });
+            
+            const newEntryId = response.data.id;
+            setEntryId(newEntryId);
+            setIsSaving(false);
+            setIsAnalyzing(true);
+            
+            const analysisResponse = await api.post(`/analyze/${newEntryId}/`);
+            setAnalysisResult(analysisResponse.data);
             setHasAnalyzed(true);
-            toast.success("AI analysis complete");
-        } catch (err) {
-            console.error(err);
-            toast.error("AI analysis failed.");
-            setAnalysisFailed(true);
-        } finally {
-            setAnalyzing(false);
+            setIsAnalyzing(false);
+            
+        } catch (error) {
+            setIsSaving(false);
+            setIsAnalyzing(false);
+            console.error('Save error:', error.response?.data || error.message);
+            toast.error('Failed to save entry.');
         }
     };
 
@@ -88,13 +75,13 @@ export default function JournalNew() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100%-4rem)] pb-8">
                 {/* Left Column: Editor */}
                 <div className="flex flex-col h-full min-h-[400px]">
-                    <form id="journal-form" onSubmit={handleSaveAndAnalyze} className="flex flex-col h-full bg-white border border-gray-200 rounded-2xl p-6 shadow-sm relative">
+                    <form id="journal-form" onSubmit={handleSubmit} className="flex flex-col h-full bg-white border border-gray-200 rounded-2xl p-6 shadow-sm relative">
                         <input
                             type="text"
                             placeholder="Give your entry a title..."
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            disabled={hasAnalyzed || analysisFailed || analyzing}
+                            disabled={hasAnalyzed || analysisFailed || isAnalyzing}
                             className="text-2xl font-bold bg-transparent border-none text-gray-900 placeholder:text-gray-400 focus:ring-0 px-0 mb-4 outline-none w-full disabled:opacity-50"
                         />
                         
@@ -102,7 +89,7 @@ export default function JournalNew() {
                             placeholder="What's on your mind today? Write as much as you need..."
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
-                            disabled={hasAnalyzed || analysisFailed || analyzing}
+                            disabled={hasAnalyzed || analysisFailed || isAnalyzing}
                             className="flex-grow resize-none bg-transparent border-none text-gray-700 placeholder:text-gray-400 focus:ring-0 px-0 outline-none text-lg leading-relaxed disabled:opacity-50 min-h-[200px]"
                         />
 
@@ -112,11 +99,11 @@ export default function JournalNew() {
                             {!hasAnalyzed && !analysisFailed && (
                                 <button
                                     type="submit"
-                                    disabled={saving || analyzing || content.trim().length < 10}
+                                    disabled={isSaving || isAnalyzing || content.trim().length < 10}
                                     className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 rounded-full text-sm font-medium transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                    {saving ? 'Saving...' : 'Save & Analyze'}
+                                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                    {isSaving ? 'Saving...' : 'Save & Analyze'}
                                 </button>
                             )}
                         </div>
@@ -125,7 +112,7 @@ export default function JournalNew() {
 
                 {/* Right Column: AI Analysis Panel */}
                 <div className="h-full flex flex-col min-h-[400px]">
-                    {!analyzing && !hasAnalyzed && !analysisFailed && (
+                    {!isAnalyzing && !hasAnalyzed && !analysisFailed && (
                         <div className="flex-grow border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center p-8 text-center bg-gray-50/50">
                             <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm border border-gray-100">
                                 <Bot className="w-8 h-8 text-purple-400" />
@@ -138,14 +125,14 @@ export default function JournalNew() {
                         </div>
                     )}
 
-                    {analyzing && (
+                    {isAnalyzing && (
                         <div className="flex-grow flex flex-col items-center justify-center">
                             <SkeletonCard />
                             <p className="mt-4 text-purple-600 animate-pulse text-sm font-medium">Analyzing your entry...</p>
                         </div>
                     )}
 
-                    {analysisFailed && !analyzing && (
+                    {analysisFailed && !isAnalyzing && (
                         <div className="flex-grow border border-red-200 bg-red-50 rounded-2xl flex flex-col items-center justify-center p-8 text-center">
                             <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mb-4">
                                 <Bot className="w-8 h-8 text-red-500" />
@@ -155,7 +142,7 @@ export default function JournalNew() {
                                 Your entry was saved successfully, but we couldn't generate AI insights right now. 
                             </p>
                             <button
-                                onClick={() => handleAnalyze(entryId)}
+                                onClick={() => handleSubmit()}
                                 className="bg-white border border-red-200 hover:bg-red-50 text-red-700 px-6 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2 shadow-sm"
                             >
                                 <RefreshCw className="w-4 h-4" />

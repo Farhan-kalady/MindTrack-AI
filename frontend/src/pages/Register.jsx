@@ -23,7 +23,7 @@ export default function Register() {
         
         setLoading(true);
         try {
-            await register(email, password, name, consentGiven);
+            await register(email.trim(), password, name, consentGiven);
             toast.success("Account created successfully!");
             navigate('/journal');
         } catch (err) {
