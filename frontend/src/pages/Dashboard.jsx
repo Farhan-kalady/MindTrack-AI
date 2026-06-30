@@ -53,7 +53,7 @@ export default function Dashboard() {
                 const historyUrl = days === 'all' ? '/mood/history/' : `/mood/history/?days=${days}`;
                 const historyRes = await axiosInstance.get(historyUrl);
                 const historyData = historyRes.data.map(item => ({
-                    date: new Date(item.entry__created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                    date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
                     score: item.mood_score,
                     emotion: item.emotion
                 }));
