@@ -31,7 +31,7 @@ export default function Dashboard() {
     const [recentEntries, setRecentEntries] = useState([]);
     const [moodHistory, setMoodHistory] = useState([]);
     const [emotionSummary, setEmotionSummary] = useState([]);
-    const [stats, setStats] = useState({ avgScore: 0, totalEntries: 0 });
+    const [stats, setStats] = useState({ avgScore: 0, totalEntries: 0, currentStreak: 0 });
     const [days, setDays] = useState(7);
 
     useEffect(() => {
@@ -74,6 +74,14 @@ export default function Dashboard() {
                     name, value
                 }));
                 setEmotionSummary(emotionData);
+
+                // Fetch fresh user profile for accurate streak
+                try {
+                    const userRes = await axiosInstance.get('/users/me/');
+                    setStats(prev => ({ ...prev, currentStreak: userRes.data.current_streak || 0 }));
+                } catch (e) {
+                    console.error("Failed to fetch fresh user profile", e);
+                }
 
             } catch (err) {
                 console.error(err);
@@ -176,7 +184,7 @@ export default function Dashboard() {
                         </div>
                         <div>
                             <p className="text-sm font-medium text-gray-500">Current Streak</p>
-                            <p className="text-3xl font-bold text-gray-900">{user?.streak || 0} <span className="text-sm text-gray-400 font-normal">days</span></p>
+                            <p className="text-3xl font-bold text-gray-900">{stats.currentStreak} <span className="text-sm text-gray-400 font-normal">days</span></p>
                         </div>
                     </div>
                 </div>
