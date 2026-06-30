@@ -1,6 +1,6 @@
 # 🧠 MindTrack AI
 
-![Django CI](https://github.com/Farhan-kalady/MindTrack-AI/actions/workflows/django.yml/badge.svg?branch=master)
+![CI Pipeline](https://github.com/Farhan-kalady/mindtrack-ai/actions/workflows/ci.yml/badge.svg?branch=master)
 ![Python](https://img.shields.io/badge/Python-3.13-blue)
 ![Django](https://img.shields.io/badge/Django-6.0.2-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
@@ -74,7 +74,7 @@ and personalized wellness suggestions using Google Gemini AI.
 
 ## ⚙️ Environment Variables
 
-Create a `.env` file in `mindtrack_backend/`:
+Create a `.env` file in `backend/`:
 
 | Variable | Description |
 |---|---|
@@ -89,8 +89,8 @@ Create a `.env` file in `mindtrack_backend/`:
 
 ```bash
 # Clone the repo
-git clone https://github.com/Farhan-kalady/MindTrack-AI.git
-cd MindTrack-AI/mindtrack_backend
+git clone https://github.com/Farhan-kalady/mindtrack-ai.git
+cd mindtrack-ai/backend
 
 # Install dependencies
 pip install -r requirements.txt
@@ -120,7 +120,7 @@ python manage.py runserver
 
 ## 📐 Architecture
 
-See [docs/architecture.md](mindtrack_backend/docs/architecture.md)
+See [docs/architecture.md](backend/docs/architecture.md)
 
 ---
 
@@ -139,7 +139,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 ## 🧪 Run Tests
 
 ```bash
-python manage.py test journals
+python manage.py test apps
 ```
 
 ---
