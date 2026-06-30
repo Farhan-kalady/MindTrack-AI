@@ -13,6 +13,13 @@ and personalized wellness suggestions using Google Gemini AI.
 
 ---
 
+## 🌐 Live Demo
+
+- **Frontend (Web App):** [https://mindtrack-ai.vercel.app](https://mindtrack-ai.vercel.app)
+- **Backend API (Swagger UI):** [https://mindtrack-ai-lw6i.onrender.com/api/schema/swagger-ui/](https://mindtrack-ai-lw6i.onrender.com/api/schema/swagger-ui/)
+
+---
+
 ## 🚀 Features
 
 - 🔐 JWT Authentication (Register & Login)
