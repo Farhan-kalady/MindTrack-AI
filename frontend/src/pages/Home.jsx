@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { Brain, Code, Briefcase, Mail, Server, Database, Globe, Layers, Activity, PenSquare, TrendingUp, Sparkles, FileText, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import farhanPhoto from '../assets/farhan-photo.jpg';
 import { 
   ScrambleIn, 
   FadeIn, 
@@ -43,15 +44,15 @@ const MarqueeRow = ({ images, direction = 1, speed = 1 }) => {
 export default function Home() {
   const { user } = useAuth();
   const marqueeImages1 = [
-    "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&q=80&w=600",
-    "https://images.unsplash.com/photo-1616469829581-73993eb86b02?auto=format&fit=crop&q=80&w=600",
-    "https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&q=80&w=600",
+    "https://images.unsplash.com/photo-1517673132405-a56a62b18caf?auto=format&fit=crop&q=80&w=600",
+    "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=600",
+    "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=600",
   ];
   
   const marqueeImages2 = [
-    "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=600",
-    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=600",
-    "https://images.unsplash.com/photo-1456406644174-8ddd4cd52a06?auto=format&fit=crop&q=80&w=600",
+    "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&q=80&w=600",
+    "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&q=80&w=600",
+    "https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&q=80&w=600",
   ];
 
   return (
@@ -222,7 +223,7 @@ export default function Home() {
                 <div className="absolute inset-0 rounded-full border border-[#C026D3]/30 animate-spin-slow pointer-events-none" style={{ animationDuration: '10s' }} />
                 <div className="absolute inset-4 rounded-full border border-[#7C3AED]/30 animate-spin-slow pointer-events-none" style={{ animationDuration: '15s', animationDirection: 'reverse' }} />
                 <div className="w-full h-full rounded-full bg-white/5 border border-white/10 overflow-hidden relative shadow-[0_0_50px_rgba(192,38,211,0.15)] flex items-center justify-center">
-                    <Briefcase className="w-24 h-24 text-white/20" />
+                    <img src={farhanPhoto} alt="Mohammed Farhan K" className="w-full h-full object-cover" />
                 </div>
               </FadeIn>
               

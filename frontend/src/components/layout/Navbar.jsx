@@ -31,13 +31,13 @@ export default function Navbar() {
         return (
             <Link 
                 to={to} 
-                className={`px-4 py-2 rounded-full text-xs lg:text-sm font-medium transition-colors md:inline-block block w-full md:w-auto text-left uppercase tracking-wider font-mono ${
+                className={`px-4 py-2 rounded-full text-xs lg:text-sm font-medium transition-colors duration-200 md:inline-block block w-full md:w-auto text-left uppercase tracking-wider font-mono ${
                     finalActive 
                         ? 'bg-white/10 text-white shadow-md backdrop-blur-sm' 
-                        : 'text-white/60 hover:text-white hover:bg-white/5'
+                        : 'text-white/70 hover:text-white hover:bg-white/5'
                 }`}
             >
-                <ScrambleText text={children} />
+                {children}
             </Link>
         );
     };
