@@ -74,7 +74,7 @@ export default function Profile() {
                     </div>
 
                     <div className="border-t border-neutral-700 pt-6">
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="bg-neutral-900/50 rounded-lg p-4 border border-neutral-800">
                                 <p className="text-xs text-neutral-500 font-medium uppercase tracking-wider mb-1">Current Streak</p>
                                 <p className="text-2xl font-bold text-white">{profileData?.current_streak || 0} <span className="text-sm font-normal text-neutral-400">days</span></p>
@@ -90,14 +90,14 @@ export default function Profile() {
                 </div>
 
                 {/* Logout */}
-                <div className="bg-neutral-800 border border-neutral-700 rounded-2xl p-6 shadow-lg flex items-center justify-between">
+                <div className="bg-neutral-800 border border-neutral-700 rounded-2xl p-6 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
                         <h3 className="text-lg font-medium text-white">Sign Out</h3>
                         <p className="text-sm text-neutral-400">Log out of your account on this device.</p>
                     </div>
                     <button
                         onClick={handleLogout}
-                        className="bg-neutral-700 hover:bg-neutral-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                        className="bg-neutral-700 hover:bg-neutral-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 min-h-[44px] w-full sm:w-auto"
                     >
                         <LogOut className="w-4 h-4" />
                         Log out
@@ -112,7 +112,7 @@ export default function Profile() {
                     </p>
                     <button
                         onClick={() => setIsDeleteModalOpen(true)}
-                        className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-rose-900/20"
+                        className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-rose-900/20 min-h-[44px] w-full sm:w-auto"
                     >
                         Delete Account
                     </button>
@@ -154,17 +154,17 @@ export default function Profile() {
                             />
                         </div>
 
-                        <div className="flex gap-3 justify-end">
+                        <div className="flex flex-col sm:flex-row gap-3 justify-end mt-2">
                             <button
                                 onClick={() => setIsDeleteModalOpen(false)}
-                                className="px-4 py-2 text-sm font-medium text-neutral-300 hover:text-white transition-colors"
+                                className="px-4 py-2 text-sm font-medium text-neutral-300 hover:text-white transition-colors min-h-[44px] w-full sm:w-auto"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleDeleteAccount}
                                 disabled={deleteConfirmation !== 'DELETE' || isDeleting}
-                                className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] w-full sm:w-auto"
                             >
                                 {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Delete Forever'}
                             </button>

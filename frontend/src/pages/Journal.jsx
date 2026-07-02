@@ -75,12 +75,12 @@ export default function Journal() {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 w-full">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900 tracking-tight">My Journal</h1>
                     <p className="text-gray-500 mt-1">Reflect on your days and track your emotional journey.</p>
                 </div>
-                <div className="flex items-center gap-4 w-full sm:w-auto">
+                <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                     <div className="relative w-full sm:w-64">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <input 
@@ -93,7 +93,7 @@ export default function Journal() {
                     </div>
                     <Link 
                         to="/journal/new" 
-                        className="inline-flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-full text-sm font-medium transition-colors shadow-lg whitespace-nowrap"
+                        className="inline-flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-full text-sm font-medium transition-colors shadow-lg whitespace-nowrap min-h-[44px] w-full sm:w-auto"
                     >
                         <PenSquare className="w-4 h-4" />
                         + New Entry

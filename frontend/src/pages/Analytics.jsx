@@ -91,14 +91,14 @@ export default function Analytics() {
 
             {/* Chart Section */}
             <div className="bg-neutral-800 border border-neutral-700 rounded-2xl p-6 shadow-lg mb-8">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 w-full">
                     <h3 className="text-xl font-semibold text-white">Mood Trajectory</h3>
-                    <div className="flex bg-neutral-900 rounded-full p-1 border border-neutral-700">
+                    <div className="flex bg-neutral-900 rounded-full p-1 border border-neutral-700 w-full sm:w-auto overflow-x-auto flex-nowrap">
                         {[7, 14, 30].map(d => (
                             <button
                                 key={d}
                                 onClick={() => setDays(d)}
-                                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
                                     days === d 
                                     ? 'bg-neutral-700 text-white shadow-sm' 
                                     : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
@@ -161,7 +161,7 @@ export default function Analytics() {
                         <button
                             onClick={generateReport}
                             disabled={generatingReport}
-                            className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-full text-sm font-medium transition-colors shadow-lg shadow-purple-900/20 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap"
+                            className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-full text-sm font-medium transition-colors shadow-lg shadow-purple-900/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap min-h-[44px] w-full sm:w-auto"
                         >
                             {generatingReport ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                             {generatingReport ? 'Generating...' : 'Generate New Report'}

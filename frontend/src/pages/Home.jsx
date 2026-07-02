@@ -10,7 +10,7 @@ export default function Home() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center" style={{ gridTemplateColumns: '1fr 1fr' }}>
                         {/* Left Column: Copy & CTA */}
                         <div className="space-y-6 text-center lg:text-left">
-                            <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-tight">
+                            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight leading-tight">
                                 <span className="text-[#111827]">Understand your mind.</span><br />
                                 <span className="text-[#7C3AED]">Nourish</span>{' '}
                                 <span className="text-[#10B981]">your</span>{' '}
@@ -92,6 +92,9 @@ export default function Home() {
                         </div>
 
                         {/* Arrow */}
+                        <div className="md:hidden text-gray-300 my-2">
+                            <svg className="w-6 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                        </div>
                         <div className="hidden md:block text-gray-300">
                             <svg className="w-12 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                         </div>
@@ -104,6 +107,9 @@ export default function Home() {
                         </div>
 
                         {/* Arrow */}
+                        <div className="md:hidden text-gray-300 my-2">
+                            <svg className="w-6 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                        </div>
                         <div className="hidden md:block text-gray-300">
                             <svg className="w-12 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                         </div>
@@ -197,7 +203,7 @@ export default function Home() {
                         {/* Contact Info (Right Side - 1 Column) */}
                         <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-100 hover:-translate-y-1 hover:shadow-[0_4px_20px_rgba(124,58,237,0.1)] transition-all duration-300 relative overflow-hidden flex h-full">
                             <div className="w-1 absolute left-0 top-0 bottom-0 bg-[#7C3AED]"></div>
-                            <div className="p-8 pl-10 flex-grow flex flex-col justify-center">
+                            <div className="p-6 sm:p-8 sm:pl-10 flex-grow flex flex-col justify-center">
                                 <div className="mb-8">
                                     <h3 className="text-[22px] font-bold text-gray-900 mb-2">Mohammed Farhan K</h3>
                                     <p className="text-[14px] text-gray-500 font-medium leading-relaxed">AI / Python Developer Intern @ ZLAQA AI Labs Pvt. Ltd.</p>

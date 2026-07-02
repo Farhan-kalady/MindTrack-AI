@@ -83,7 +83,7 @@ export default function Login() {
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className={`w-full bg-neutral-900 border ${emailError ? 'border-red-500' : 'border-neutral-700'} rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none`}
+                            className={`w-full bg-neutral-900 border ${emailError ? 'border-red-500' : 'border-neutral-700'} rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none min-h-[44px]`}
                             placeholder="you@example.com"
                         />
                         {emailError && (
@@ -102,13 +102,13 @@ export default function Login() {
                                 required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className={`w-full bg-neutral-900 border ${passwordError ? 'border-red-500' : 'border-neutral-700'} rounded-lg px-4 py-2.5 pr-10 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none`}
+                                className={`w-full bg-neutral-900 border ${passwordError ? 'border-red-500' : 'border-neutral-700'} rounded-lg px-4 py-3 pr-12 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none min-h-[44px]`}
                                 placeholder="••••••••"
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#7C3AED] transition-colors focus:outline-none"
+                                className="absolute right-1 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#7C3AED] transition-colors focus:outline-none p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
                             >
                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
@@ -124,7 +124,7 @@ export default function Login() {
                     <button 
                         type="submit" 
                         disabled={loading}
-                        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 min-h-[44px] rounded-lg transition-colors flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
                     </button>

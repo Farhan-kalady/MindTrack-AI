@@ -71,17 +71,17 @@ export default function JournalCard({ entry, onDelete }) {
                     )}
                 </div>
                 
-                <div className="px-5 pb-4 flex justify-end gap-2 border-t border-gray-50 pt-3 bg-gray-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <div className="px-5 pb-4 flex justify-end gap-2 border-t border-gray-50 pt-3 bg-gray-50/50 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
                     <button 
                         onClick={() => setIsEditModalOpen(true)}
-                        className="p-1.5 text-gray-400 hover:text-purple-600 rounded-md hover:bg-purple-50 transition-colors"
+                        className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-purple-600 rounded-md hover:bg-purple-50 transition-colors"
                         title="Edit Entry"
                     >
                         <Edit className="w-4 h-4" />
                     </button>
                     <button 
                         onClick={() => onDelete(entry.id)}
-                        className="p-1.5 text-gray-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors"
+                        className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors"
                         title="Delete Entry"
                     >
                         <Trash2 className="w-4 h-4" />

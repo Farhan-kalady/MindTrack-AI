@@ -104,13 +104,13 @@ export default function Dashboard() {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 bg-[#F5F5FA] min-h-[calc(100vh-64px)] animate-slide-up">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Your Dashboard</h1>
-                    <p className="text-gray-500 mt-1">Here is a snapshot of your emotional well-being.</p>
-                </div>
-                <div className="flex items-center gap-4">
-                    <div className="flex bg-white rounded-full p-1 border border-gray-200 shadow-sm">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 w-full">
+                    <div>
+                        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Your Dashboard</h1>
+                        <p className="text-gray-500 mt-1">Here is a snapshot of your emotional well-being.</p>
+                    </div>
+                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 w-full sm:w-auto">
+                        <div className="flex bg-white rounded-full p-1 border border-gray-200 shadow-sm w-full sm:w-auto overflow-x-auto flex-nowrap">
                         {[7, 30, 'all'].map(d => (
                             <button
                                 key={d}
@@ -127,7 +127,7 @@ export default function Dashboard() {
                     </div>
                     <Link 
                         to="/journal/new" 
-                        className="inline-flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-full text-sm font-medium transition-colors shadow-sm whitespace-nowrap"
+                        className="inline-flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-full text-sm font-medium transition-colors shadow-sm whitespace-nowrap min-h-[44px] w-full sm:w-auto"
                     >
                         <PenSquare className="w-4 h-4" />
                         New Entry

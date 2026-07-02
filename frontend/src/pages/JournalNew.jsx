@@ -66,16 +66,16 @@ export default function JournalNew() {
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[calc(100vh-4rem)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-[calc(100vh-4rem)] h-full lg:h-[calc(100vh-4rem)]">
             <button 
                 onClick={() => navigate('/journal')}
-                className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors mb-6 group w-fit"
+                className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors mb-6 group w-fit min-h-[44px]"
             >
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                 Back to Journal
             </button>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100%-4rem)] pb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full lg:h-[calc(100%-4rem)] pb-8">
                 {/* Left Column: Editor */}
                 <div className="flex flex-col h-full min-h-[400px]">
                     <form id="journal-form" onSubmit={handleSubmit} className="flex flex-col h-full bg-white border border-gray-200 rounded-2xl p-6 shadow-sm relative">
@@ -103,7 +103,7 @@ export default function JournalNew() {
                                 <button
                                     type="submit"
                                     disabled={isSaving || isAnalyzing || content.trim().length < 10}
-                                    className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 rounded-full text-sm font-medium transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 rounded-full text-sm font-medium transition-colors shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
                                 >
                                     {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                                     {isSaving ? 'Saving...' : 'Save & Analyze'}
@@ -146,7 +146,7 @@ export default function JournalNew() {
                             </p>
                             <button
                                 onClick={() => handleSubmit()}
-                                className="bg-white border border-red-200 hover:bg-red-50 text-red-700 px-6 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2 shadow-sm"
+                                className="bg-white border border-red-200 hover:bg-red-50 text-red-700 px-6 py-2 rounded-full text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-sm min-h-[44px]"
                             >
                                 <RefreshCw className="w-4 h-4" />
                                 Retry Analysis
@@ -157,16 +157,16 @@ export default function JournalNew() {
                     {hasAnalyzed && (
                         <div className="flex-grow flex flex-col">
                             <AnalysisResult analysis={analysisResult} />
-                            <div className="mt-8 flex justify-center gap-4">
+                            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4 w-full">
                                 <button 
                                     onClick={() => navigate('/journal')}
-                                    className="px-6 py-2.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                                    className="px-6 py-2.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors shadow-sm min-h-[44px] w-full sm:w-auto"
                                 >
                                     View All Entries
                                 </button>
                                 <button 
                                     onClick={resetForm}
-                                    className="px-6 py-2.5 rounded-full text-sm font-medium bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors flex items-center gap-2"
+                                    className="px-6 py-2.5 rounded-full text-sm font-medium bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors flex items-center justify-center gap-2 min-h-[44px] w-full sm:w-auto"
                                 >
                                     <PenSquare className="w-4 h-4" />
                                     Write Another
