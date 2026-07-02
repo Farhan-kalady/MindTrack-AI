@@ -22,7 +22,7 @@ export default function Register() {
 
     useEffect(() => {
         if (user) {
-            navigate('/dashboard');
+            navigate('/');
         }
     }, [user, navigate]);
 
@@ -82,7 +82,7 @@ export default function Register() {
             
             await login(formData.email, formData.password);
             
-            navigate('/dashboard');
+            navigate('/');
             
         } catch (err) {
             console.error('Registration error:', err);
