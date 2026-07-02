@@ -3,10 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import { 
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer
+    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Area, AreaChart
 } from 'recharts';
 import { BarChart2, Loader2, Sparkles, FileText, AlertCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { 
+    ScrambleIn, 
+    FadeIn, 
+    GlowCard, 
+    Watermark, 
+    PrimaryButton,
+    GhostButton,
+    AnimatedText
+} from '../components/ui/CinematicUI';
 
 export default function Analytics() {
     const { user } = useAuth();
@@ -80,127 +89,148 @@ export default function Analytics() {
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 animate-slide-up">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-2">
-                    <BarChart2 className="w-8 h-8 text-purple-500" />
-                    Mood Analytics
-                </h1>
-                <p className="text-neutral-400 mt-1">Visualize your emotional journey and discover AI-driven insights.</p>
-            </div>
-
-            {/* Chart Section */}
-            <div className="bg-neutral-800 border border-neutral-700 rounded-2xl p-6 shadow-lg mb-8">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 w-full">
-                    <h3 className="text-xl font-semibold text-white">Mood Trajectory</h3>
-                    <div className="flex bg-neutral-900 rounded-full p-1 border border-neutral-700 w-full sm:w-auto overflow-x-auto flex-nowrap">
-                        {[7, 14, 30].map(d => (
-                            <button
-                                key={d}
-                                onClick={() => setDays(d)}
-                                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
-                                    days === d 
-                                    ? 'bg-neutral-700 text-white shadow-sm' 
-                                    : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
-                                }`}
-                            >
-                                {d} Days
-                            </button>
-                        ))}
-                    </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative font-mono min-h-screen">
+            <Watermark text="BALANCE" />
+            
+            <div className="relative z-10">
+                <div className="mb-12">
+                    <h1 className="text-3xl md:text-4xl font-bold text-white tracking-widest uppercase mb-2">
+                        <ScrambleIn text="Track Your Mood" />
+                    </h1>
+                    <FadeIn delay={0.2} y={10}>
+                        <p className="text-white/60">Visualize your emotional journey and discover AI-driven insights.</p>
+                    </FadeIn>
                 </div>
 
-                {loadingChart ? (
-                    <div className="h-80 w-full flex items-center justify-center">
-                        <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
-                    </div>
-                ) : moodHistory.length > 0 ? (
-                    <div className="h-80 w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={moodHistory} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
-                                <XAxis dataKey="id" tickFormatter={(id) => moodHistory[id]?.date} stroke="#a3a3a3" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="#a3a3a3" fontSize={12} tickLine={false} axisLine={false} domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} />
-                                <RechartsTooltip 
-                                    labelFormatter={(label) => moodHistory[label]?.date}
-                                    contentStyle={{ backgroundColor: '#262626', borderColor: '#404040', borderRadius: '0.5rem', color: '#fff' }}
-                                    itemStyle={{ color: '#c084fc' }}
-                                />
-                                <Line 
-                                    type="monotone" 
-                                    dataKey="score" 
-                                    stroke="#a855f7" 
-                                    strokeWidth={4}
-                                    dot={{ r: 5, fill: '#a855f7', strokeWidth: 0 }}
-                                    activeDot={{ r: 8, fill: '#d8b4fe' }}
-                                    animationDuration={1500}
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-                ) : (
-                    <div className="h-80 w-full flex items-center justify-center border-2 border-dashed border-neutral-700 rounded-xl">
-                        <p className="text-neutral-500 text-sm">Not enough data to display chart. Start journaling!</p>
-                    </div>
-                )}
-            </div>
-
-            {/* Weekly Report Section */}
-            <div className="bg-gradient-to-r from-purple-900/40 to-emerald-900/20 border border-neutral-700 rounded-2xl p-6 lg:p-8 shadow-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
-                
-                <div className="relative z-10">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                        <div>
-                            <h3 className="text-xl font-semibold text-white flex items-center gap-2">
-                                <FileText className="w-5 h-5 text-purple-400" />
-                                Weekly AI Wellness Report
-                            </h3>
-                            <p className="text-sm text-neutral-400 mt-1">Get a comprehensive summary of your week powered by Gemini.</p>
-                        </div>
-                        <button
-                            onClick={generateReport}
-                            disabled={generatingReport}
-                            className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-full text-sm font-medium transition-colors shadow-lg shadow-purple-900/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap min-h-[44px] w-full sm:w-auto"
-                        >
-                            {generatingReport ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                            {generatingReport ? 'Generating...' : 'Generate New Report'}
-                        </button>
-                    </div>
-
-                    {loadingReport ? (
-                        <div className="py-12 flex justify-center">
-                            <Loader2 className="w-6 h-6 text-purple-500 animate-spin" />
-                        </div>
-                    ) : report ? (
-                        <div className="bg-neutral-900/60 backdrop-blur-sm border border-neutral-700/50 rounded-xl p-6">
-                            <div className="flex flex-wrap items-center gap-4 mb-6">
-                                <span className="bg-purple-500/20 text-purple-300 border border-purple-500/30 px-3 py-1 rounded-full text-sm font-medium">
-                                    Week of {new Date(report.week_start).toLocaleDateString()}
-                                </span>
-                                <span className="text-neutral-400 text-sm">
-                                    Dominant Emotion: <strong className="text-white capitalize">{report.dominant_emotion}</strong>
-                                </span>
-                                <span className="text-neutral-400 text-sm">
-                                    Avg Score: <strong className="text-white">{report.average_mood_score}/10</strong>
-                                </span>
-                            </div>
-                            <div className="text-neutral-300 space-y-4">
-                                {report.week_summary && report.week_summary.split('\n').map((paragraph, idx) => (
-                                    paragraph.trim() && <p key={idx} className="leading-relaxed">{paragraph}</p>
+                {/* Chart Section */}
+                <FadeIn delay={0.3} y={20}>
+                    <GlowCard className="p-6 md:p-8 mb-12">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 w-full">
+                            <h3 className="text-sm font-bold text-white/60 uppercase tracking-widest">Mood Trajectory</h3>
+                            <div className="flex gap-2">
+                                {[7, 30].map(d => (
+                                    <button
+                                        key={d}
+                                        onClick={() => setDays(d)}
+                                        className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
+                                            days === d 
+                                            ? 'bg-white/10 text-white shadow-md border border-white/10' 
+                                            : 'text-white/40 border border-white/5 hover:text-white hover:bg-white/5'
+                                        }`}
+                                    >
+                                        {d} Days
+                                    </button>
                                 ))}
                             </div>
                         </div>
-                    ) : (
-                        <div className="bg-neutral-900/40 border border-neutral-700/50 rounded-xl p-8 text-center flex flex-col items-center">
-                            <AlertCircle className="w-8 h-8 text-neutral-500 mb-3" />
-                            <h4 className="text-white font-medium mb-1">No reports generated yet</h4>
-                            <p className="text-neutral-400 text-sm max-w-md">
-                                You need to write at least one journal entry this week to generate a meaningful report.
-                            </p>
+
+                        {loadingChart ? (
+                            <div className="h-80 w-full flex items-center justify-center">
+                                <Loader2 className="w-8 h-8 text-[#C026D3] animate-spin" />
+                            </div>
+                        ) : moodHistory.length > 0 ? (
+                            <div className="h-80 w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={moodHistory} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                                        <defs>
+                                            <linearGradient id="colorScoreArea" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#C026D3" stopOpacity={0.3}/>
+                                                <stop offset="95%" stopColor="#C026D3" stopOpacity={0}/>
+                                            </linearGradient>
+                                            <linearGradient id="colorScoreLine" x1="0" y1="0" x2="1" y2="0">
+                                                <stop offset="0%" stopColor="#7C3AED" />
+                                                <stop offset="50%" stopColor="#C026D3" />
+                                                <stop offset="100%" stopColor="#DB2777" />
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                                        <XAxis dataKey="id" tickFormatter={(id) => moodHistory[id]?.date} stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} fontFamily="Space Mono" />
+                                        <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} fontFamily="Space Mono" />
+                                        <RechartsTooltip 
+                                            labelFormatter={(label) => moodHistory[label]?.date}
+                                            contentStyle={{ backgroundColor: 'rgba(10,10,12,0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '1rem', color: '#ffffff', backdropFilter: 'blur(16px)', fontFamily: 'Space Mono' }}
+                                            itemStyle={{ color: '#C026D3' }}
+                                        />
+                                        <Area 
+                                            type="monotone" 
+                                            dataKey="score" 
+                                            stroke="url(#colorScoreLine)" 
+                                            strokeWidth={3}
+                                            fillOpacity={1} 
+                                            fill="url(#colorScoreArea)" 
+                                            dot={{ r: 4, fill: '#C026D3', strokeWidth: 0 }}
+                                            activeDot={{ r: 6, fill: '#DB2777', strokeWidth: 2, stroke: '#fff' }}
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
+                        ) : (
+                            <div className="h-80 w-full flex items-center justify-center border border-dashed border-white/10 bg-white/5 rounded-xl">
+                                <p className="text-white/40 text-sm">Not enough data to display chart. Start journaling!</p>
+                            </div>
+                        )}
+                    </GlowCard>
+                </FadeIn>
+
+                {/* Weekly Report Section */}
+                <FadeIn delay={0.4} y={20}>
+                    <GlowCard className="p-6 lg:p-10 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-[#C026D3]/10 rounded-full blur-[80px] -mr-20 -mt-20 pointer-events-none" />
+                        
+                        <div className="relative z-10">
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+                                <div>
+                                    <h3 className="text-xl font-bold text-white flex items-center gap-3 uppercase tracking-widest">
+                                        <FileText className="w-5 h-5 text-[#C026D3]" />
+                                        AI Wellness Report
+                                    </h3>
+                                    <p className="text-sm text-white/60 mt-2">Get a comprehensive summary of your week powered by Gemini.</p>
+                                </div>
+                                <PrimaryButton
+                                    onClick={generateReport}
+                                    disabled={generatingReport}
+                                    className="w-full sm:w-auto text-xs py-3 px-6 flex items-center justify-center gap-2"
+                                >
+                                    {generatingReport ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                                    {generatingReport ? 'Generating...' : 'Generate Report'}
+                                </PrimaryButton>
+                            </div>
+
+                            {loadingReport ? (
+                                <div className="py-12 flex justify-center">
+                                    <Loader2 className="w-6 h-6 text-[#C026D3] animate-spin" />
+                                </div>
+                            ) : report ? (
+                                <div className="bg-[#0A0A0C]/50 backdrop-blur-md border border-white/10 rounded-xl p-8">
+                                    <div className="flex flex-wrap items-center gap-4 mb-8 border-b border-white/10 pb-6">
+                                        <span className="bg-[#C026D3]/20 text-[#C026D3] border border-[#C026D3]/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+                                            Week of {new Date(report.week_start).toLocaleDateString()}
+                                        </span>
+                                        <span className="text-white/40 text-xs uppercase tracking-widest">
+                                            Dominant Emotion: <strong className="text-white capitalize">{report.dominant_emotion}</strong>
+                                        </span>
+                                        <span className="text-white/40 text-xs uppercase tracking-widest">
+                                            Avg Score: <strong className="text-white font-sans">{report.average_mood_score}/10</strong>
+                                        </span>
+                                    </div>
+                                    <div className="text-white/80 space-y-6 text-sm md:text-base leading-relaxed font-sans font-light">
+                                        {report.week_summary && report.week_summary.split('\n').map((paragraph, idx) => (
+                                            paragraph.trim() && <p key={idx}>{paragraph}</p>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="bg-[#0A0A0C]/50 border border-white/10 rounded-xl p-10 text-center flex flex-col items-center">
+                                    <AlertCircle className="w-10 h-10 text-white/20 mb-4" />
+                                    <h4 className="text-white font-bold uppercase tracking-widest mb-2">No reports generated yet</h4>
+                                    <p className="text-white/40 text-sm max-w-md">
+                                        You need to write at least one journal entry this week to generate a meaningful report.
+                                    </p>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
+                    </GlowCard>
+                </FadeIn>
             </div>
         </div>
     );

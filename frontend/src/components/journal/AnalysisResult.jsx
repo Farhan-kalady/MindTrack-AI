@@ -1,5 +1,6 @@
 import { BrainCircuit, Sparkles } from 'lucide-react';
 import CrisisBanner from '../ui/CrisisBanner';
+import { GlowCard } from '../ui/CinematicUI';
 
 const emotionColors = {
     happy: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
@@ -28,55 +29,55 @@ export default function AnalysisResult({ analysis }) {
     const barColor = getMoodColor(mood_score);
 
     return (
-        <div className="w-full animate-slide-up">
+        <div className="w-full font-mono">
             {crisis_detected && <CrisisBanner />}
             
-            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-100 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
+            <GlowCard className="p-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#C026D3]/20 rounded-full blur-[60px] -mr-10 -mt-10 pointer-events-none" />
                 
                 <div className="flex items-center gap-2 mb-6">
-                    <BrainCircuit className="w-5 h-5 text-purple-600" />
-                    <h3 className="text-lg font-semibold text-gray-900">AI Insights</h3>
+                    <BrainCircuit className="w-5 h-5 text-[#C026D3]" />
+                    <h3 className="text-sm font-bold tracking-widest uppercase text-white">AI Insights</h3>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                        <p className="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wider">Primary Emotion</p>
-                        <span className={`inline-flex px-3 py-1 rounded-md text-sm font-medium capitalize border ${badgeColor}`}>
+                    <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                        <p className="text-[10px] text-white/40 mb-1 font-bold uppercase tracking-widest">Primary Emotion</p>
+                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border ${badgeColor}`}>
                             {emotion}
                         </span>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                        <p className="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wider">Sentiment</p>
-                        <span className="text-gray-900 capitalize font-medium">{sentiment}</span>
+                    <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                        <p className="text-[10px] text-white/40 mb-1 font-bold uppercase tracking-widest">Sentiment</p>
+                        <span className="text-white uppercase text-xs tracking-widest font-bold">{sentiment}</span>
                     </div>
                 </div>
 
-                <div className="mb-6">
+                <div className="mb-8">
                     <div className="flex justify-between items-end mb-2">
-                        <p className="text-sm font-medium text-gray-700">Mood Score</p>
-                        <span className="text-xl font-bold text-gray-900">{mood_score}<span className="text-sm text-gray-500 font-normal">/10</span></span>
+                        <p className="text-xs font-bold uppercase tracking-widest text-white/60">Mood Score</p>
+                        <span className="text-xl font-bold text-white font-sans">{mood_score}<span className="text-xs text-white/40 font-normal">/10</span></span>
                     </div>
-                    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
                         <div 
-                            className={`h-full ${barColor} rounded-full transition-all duration-1000 ease-out`}
+                            className={`h-full ${barColor} transition-all duration-1000 ease-out`}
                             style={{ width: `${mood_score * 10}%` }}
                         />
                     </div>
                 </div>
 
-                <div className="bg-purple-50 border border-purple-100 rounded-lg p-4 relative overflow-hidden">
+                <div className="bg-[#C026D3]/10 border border-[#C026D3]/20 rounded-xl p-5 relative overflow-hidden">
                     <div className="flex items-start gap-3 relative z-10">
-                        <Sparkles className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
+                        <Sparkles className="w-5 h-5 text-[#C026D3] flex-shrink-0 mt-0.5" />
                         <div>
-                            <h4 className="text-sm font-medium text-purple-900 mb-1">Wellness Suggestion</h4>
-                            <p className="text-sm text-purple-800 leading-relaxed">
+                            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#C026D3] mb-2">Wellness Suggestion</h4>
+                            <p className="text-sm text-white/80 leading-relaxed font-sans font-light">
                                 {wellness_suggestion}
                             </p>
                         </div>
                     </div>
                 </div>
-            </div>
+            </GlowCard>
         </div>
     );
 }
