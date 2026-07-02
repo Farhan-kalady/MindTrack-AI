@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 
 export default function Register() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [consentGiven, setConsentGiven] = useState(false);
     const [loading, setLoading] = useState(false);
     
@@ -73,15 +74,24 @@ export default function Register() {
                     
                     <div>
                         <label className="block text-sm font-medium text-neutral-300 mb-1">Password</label>
-                        <input 
-                            type="password" 
-                            required
-                            minLength={6}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
-                            placeholder="••••••••"
-                        />
+                        <div className="relative">
+                            <input 
+                                type={showPassword ? 'text' : 'password'}
+                                required
+                                minLength={6}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2.5 pr-10 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
+                                placeholder="••••••••"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#7C3AED] transition-colors focus:outline-none"
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
                     </div>
 
                     <div className="flex items-start mt-2">
