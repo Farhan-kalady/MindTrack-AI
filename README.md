@@ -222,7 +222,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 **Mohammed Farhan K**
 - 🐙 GitHub: [@Farhan-kalady](https://github.com/Farhan-kalady/)
-- 💼 LinkedIn: [Mohammed Farhan K](https://www.linkedin.com/in/mohammed-farhan-k)
+- 💼 LinkedIn: [Mohammed Farhan K](https://www.linkedin.com/in/farhan-kalady-70651523b)
 - 📧 Email: farhancherushola@gmail.com
 
 ---
