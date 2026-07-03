@@ -3,8 +3,22 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    background-color: #F5F5FA;
-    @apply text-gray-900 antialiased selection:bg-emerald-500/30;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html, body, #root {
+    background-color: #0A0A0C;
+    color: #ffffff;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    font-family: 'Space Mono', monospace;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background-color: rgba(192, 38, 211, 0.3); /* magenta */
   }
 }

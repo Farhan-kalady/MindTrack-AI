@@ -75,8 +75,8 @@
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| POST | `/api/auth/register/` | Register new user | ✅ |
-| POST | `/api/auth/login/` | Login & get JWT token | ✅ |
+| POST | `/api/auth/register/` | Register new user | ❌ |
+| POST | `/api/auth/login/` | Login & get JWT token | ❌ |
 | GET | `/api/journals/` | List all journal entries | ✅ |
 | POST | `/api/journals/` | Create new journal entry | ✅ |
 | GET | `/api/journals/{id}/` | Get single entry | ✅ |
@@ -86,7 +86,7 @@
 | GET | `/api/mood/history/` | Mood score time-series | ✅ |
 | GET | `/api/mood/summary/` | Mood statistics | ✅ |
 | GET | `/api/mood/weekly/` | Weekly AI report | ✅ |
-| GET | `/api/health/` | Health check | ✅ |
+| GET | `/api/health/` | Health check | ❌ |
 
 Full interactive docs → [Swagger UI](https://mindtrack-ai-lw6i.onrender.com/api/schema/swagger-ui/)
 
